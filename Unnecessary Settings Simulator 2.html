@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unnecessary Settings Simulator</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 118, 117, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(79, 172, 254, 0.3) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-orbs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            animation: float 20s infinite linear;
+        }
+
+        .orb:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .orb:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 50%;
+            right: 20%;
+            animation-delay: -7s;
+        }
+
+        .orb:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 30%;
+            animation-delay: -14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(120deg); }
+            66% { transform: translateY(15px) rotate(240deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffffff, #f0f9ff, #ddd6fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .setting-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .setting-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .setting-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .setting-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .setting-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .setting-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease;
+        }
+
+        .setting-card:hover .setting-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .setting-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .setting-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .slider-container {
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .slider-value {
+            position: absolute;
+            top: -35px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .slider:hover + .slider-value,
+        .slider:focus + .slider-value {
+            opacity: 1;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle.active {
+            background: var(--success-color);
+        }
+
+        .toggle::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle.active::before {
+            transform: translateX(30px);
+        }
+
+        .status-indicator {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .status-normal {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning-color);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger-color);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .control-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        .control-panel h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--secondary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 75, 43, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-gradient);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .notification-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow-lg);
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .notification-toast.show {
+            transform: translateX(0);
+        }
+
+        .easter-egg {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--secondary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .easter-egg:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        @keyframes slideInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .pulsing {
+            animation: pulse 2s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-orbs">
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1>Unnecessary Settings™</h1>
+            <p>Fine-tune your reality with precision controls you never knew you needed. Professional-grade placebo effects guaranteed.</p>
+        </header>
+
+        <div class="settings-grid" id="settingsGrid">
+            <!-- Settings will be dynamically generated -->
+        </div>
+
+        <div class="control-panel">
+            <h3>Master Control Panel</h3>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="randomizeAll()">🎲 Randomize All</button>
+                <button class="btn btn-secondary" onclick="resetToDefaults()">🔄 Reset Defaults</button>
+                <button class="btn btn-danger" onclick="enableChaosMode()">⚡ Chaos Mode</button>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="systemOptimization" style="width: 73%"></div>
+            </div>
+            <p style="margin-top: 0.5rem; color: var(--text-secondary);">System Optimization: <span id="optimizationPercent">73%</span></p>
+        </div>
+    </div>
+
+    <div class="notification-toast" id="notificationToast">
+        <div id="toastContent"></div>
+    </div>
+
+    <div class="easter-egg" onclick="triggerEasterEgg()">
+        🎭
+    </div>
+
+    <script>
+        const settings = [
+            {
+                id: 'confidence',
+                title: 'Confidence Booster',
+                description: 'Adjusts your perceived competence in situations where you have no actual expertise.',
+                icon: '💪',
+                type: 'slider',
+                value: 75,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 30) return { class: 'status-danger', text: 'Imposter Syndrome Active' };
+                    if (val > 85) return { class: 'status-warning', text: 'Dangerously Overconfident' };
+                    return { class: 'status-normal', text: 'Optimal Delusion Level' };
+                }
+            },
+            {
+                id: 'reality',
+                title: 'Reality Distortion Field',
+                description: 'Controls how much of actual reality penetrates your bubble of comfortable assumptions.',
+                icon: '🌍',
+                type: 'slider',
+                value: 42,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 20) return { class: 'status-danger', text: 'Living in Fantasy' };
+                    if (val > 80) return { class: 'status-warning', text: 'Uncomfortably Aware' };
+                    return { class: 'status-normal', text: 'Blissfully Ignorant' };
+                }
+            },
+            {
+                id: 'productivity',
+                title: 'Productivity Theater',
+                description: 'Makes you feel busy and important while accomplishing roughly the same amount.',
+                icon: '📈',
+                type: 'slider',
+                value: 88,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 40) return { class: 'status-danger', text: 'Actually Relaxed' };
+                    if (val > 90) return { class: 'status-warning', text: 'Burnout Imminent' };
+                    return { class: 'status-normal', text: 'Optimally Stressed' };
+                }
+            },
+            {
+                id: 'expertise',
+                title: 'Instant Expertise Mode',
+                description: 'Enables confident opinions on topics you learned about 5 minutes ago.',
+                icon: '🎓',
+                type: 'toggle',
+                value: true,
+                getStatus: (val) => {
+                    return val 
+                        ? { class: 'status-warning', text: 'Dunning-Kruger Effect Active' }
+                        : { class: 'status-normal', text: 'Humbly Ignorant' };
+                }
+            },
+            {
+                id: 'luck',
+                title: 'Luck Amplifier',
+                description: 'Increases the probability of finding parking spots and avoiding awkward conversations.',
+                icon: '🍀',
+                type: 'slider',
+                value: 60,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 25) return { class: 'status-danger', text: 'Murphy\'s Law Active' };
+                    if (val > 85) return { class: 'status-warning', text: 'Suspiciously Lucky' };
+                    return { class: 'status-normal', text: 'Statistically Average' };
+                }
+            },
+            {
+                id: 'nostalgia',
+                title: 'Nostalgia Filter',
+                description: 'Automatically removes negative memories and enhances the "good old days" effect.',
+                icon: '📸',
+                type: 'slider',
+                value: 70,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 30) return { class: 'status-danger', text: 'Painfully Accurate Memory' };
+                    if (val > 85) return { class: 'status-warning', text: 'Rose-Colored Overload' };
+                    return { class: 'status-normal', text: 'Selective Amnesia Engaged' };
+                }
+            },
+            {
+                id: 'urgency',
+                title: 'Artificial Urgency Generator',
+                description: 'Creates the feeling that everything is extremely time-sensitive and crucial.',
+                icon: '⏰',
+                type: 'slider',
+                value: 85,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 40) return { class: 'status-normal', text: 'Zen-like Calm' };
+                    if (val > 90) return { class: 'status-danger', text: 'Panic Mode Engaged' };
+                    return { class: 'status-warning', text: 'Constructive Anxiety' };
+                }
+            },
+            {
+                id: 'social',
+                title: 'Social Battery Optimizer',
+                description: 'Manages your tolerance for human interaction and small talk endurance.',
+                icon: '🔋',
+                type: 'slider',
+                value: 35,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 20) return { class: 'status-danger', text: 'Hermit Mode Active' };
+                    if (val > 80) return { class: 'status-warning', text: 'Dangerously Extroverted' };
+                    return { class: 'status-normal', text: 'Socially Functional' };
+                }
+            },
+            {
+                id: 'perfectionism',
+                title: 'Perfectionism Paralysis',
+                description: 'Controls how much you obsess over minor details while ignoring major issues.',
+                icon: '✨',
+                type: 'toggle',
+                value: false,
+                getStatus: (val) => {
+                    return val 
+                        ? { class: 'status-warning', text: 'Nothing Ever Gets Done' }
+                        : { class: 'status-normal', text: 'Good Enough Philosophy' };
+                }
+            },
+            {
+                id: 'focus',
+                title: 'Attention Span Multiplier',
+                description: 'Extends your ability to concentrate on important tasks by up to 3.7 seconds.',
+                icon: '🎯',
+                type: 'slider',
+                value: 25,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 30) return { class: 'status-danger', text: 'Goldfish-Level Focus' };
+                    if (val > 70) return { class: 'status-warning', text: 'Unnaturally Focused' };
+                    return { class: 'status-normal', text: 'ADHD Standard' };
+                }
+            },
+            {
+                id: 'wisdom',
+                title: 'Retrospective Wisdom Engine',
+                description: 'Generates profound insights about decisions 3-5 years after it would have been useful.',
+                icon: '🦉',
+                type: 'slider',
+                value: 90,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 40) return { class: 'status-normal', text: 'Blissfully Unaware' };
+                    if (val > 85) return { class: 'status-danger', text: 'Chronically Regretful' };
+                    return { class: 'status-warning', text: 'Moderately Haunted' };
+                }
+            },
+            {
+                id: 'motivation',
+                title: 'Motivation Randomizer',
+                description: 'Provides bursts of intense motivation at completely inconvenient times.',
+                icon: '🚀',
+                type: 'toggle',
+                value: true,
+                getStatus: (val) => {
+                    return val 
+                        ? { class: 'status-warning', text: '3 AM Productivity Spikes' }
+                        : { class: 'status-normal', text: 'Consistently Unmotivated' };
+                }
+            }
+        ];
+
+        let chaosMode = false;
+        let easterEggCount = 0;
+
+        function createSettingCard(setting) {
+            const card = document.createElement('div');
+            card.className = 'setting-card';
+            card.setAttribute('data-setting', setting.id);
+
+            const currentStatus = setting.getStatus(setting.value);
+
+            if (setting.type === 'slider') {
+                card.innerHTML = `
+                    <div class="setting-header">
+                        <div class="setting-icon">${setting.icon}</div>
+                        <div>
+                            <div class="setting-title">${setting.title}</div>
+                            <div class="setting-description">${setting.description}</div>
+                        </div>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" class="slider" min="${setting.min}" max="${setting.max}" 
+                               value="${setting.value}" id="slider-${setting.id}"
+                               oninput="updateSetting('${setting.id}', this.value)">
+                        <div class="slider-value" id="value-${setting.id}">${setting.value}${setting.unit}</div>
+                    </div>
+                    <div class="status-indicator ${currentStatus.class}" id="status-${setting.id}">
+                        ${currentStatus.text}
+                    </div>
+                `;
+            } else if (setting.type === 'toggle') {
+                card.innerHTML = `
+                    <div class="setting-header">
+                        <div class="setting-icon">${setting.icon}</div>
+                        <div>
+                            <div class="setting-title">${setting.title}</div>
+                            <div class="setting-description">${setting.description}</div>
+                        </div>
+                    </div>
+                    <div class="toggle-container">
+                        <div class="toggle ${setting.value ? 'active' : ''}" id="toggle-${setting.id}"
+                             onclick="toggleSetting('${setting.id}')"></div>
+                        <span>${setting.value ? 'Enabled' : 'Disabled'}</span>
+                    </div>
+                    <div class="status-indicator ${currentStatus.class}" id="status-${setting.id}">
+                        ${currentStatus.text}
+                    </div>
+                `;
+            }
+
+            return card;
+        }
+
+        function updateSetting(settingId, value) {
+            const setting = settings.find(s => s.id === settingId);
+            if (!setting) return;
+
+            setting.value = parseFloat(value);
+            const status = setting.getStatus(setting.value);
+            
+            // Update value display
+            const valueElement = document.getElementById(`value-${settingId}`);
+            if (valueElement) {
+                valueElement.textContent = `${value}${setting.unit}`;
+                valueElement.style.left = `${(value - setting.min) / (setting.max - setting.min) * 100}%`;
+            }
+            
+            // Update status
+            const statusElement = document.getElementById(`status-${settingId}`);
+            if (statusElement) {
+                statusElement.className = `status-indicator ${status.class}`;
+                statusElement.textContent = status.text;
+            }
+
+            updateOptimization();
+            
+            if (Math.random() < 0.3) {
+                showNotification(getRandomNotification(settingId, value));
+            }
+        }
+
+        function toggleSetting(settingId) {
+            const setting = settings.find(s => s.id === settingId);
+            if (!setting) return;
+
+            setting.value = !setting.value;
+            const status = setting.getStatus(setting.value);
+            
+            // Update toggle appearance
+            const toggleElement = document.getElementById(`toggle-${settingId}`);
+            if (toggleElement) {
+                toggleElement.classList.toggle('active', setting.value);
+                const container = toggleElement.parentElement;
+                const span = container.querySelector('span');
+                if (span) {
+                    span.textContent = setting.value ? 'Enabled' : 'Disabled';
+                }
+            }
+            
+            // Update status
+            const statusElement = document.getElementById(`status-${settingId}`);
+            if (statusElement) {
+                statusElement.className = `status-indicator ${status.class}`;
+                statusElement.textContent = status.text;
+            }
+
+            updateOptimization();
+            
+            if (Math.random() < 0.4) {
+                showNotification(getRandomNotification(settingId, setting.value));
+            }
+        }
+
+        function updateOptimization() {
+            const totalSettings = settings.length;
+            let optimizationScore = 0;
+            
+            settings.forEach(setting => {
+                if (setting.type === 'slider') {
+                    // Optimal ranges vary per setting
+                    const optimal = getOptimalRange(setting.id);
+                    const distance = Math.abs(setting.value - optimal.target);
+                    const maxDistance = Math.max(optimal.target - optimal.min, optimal.max - optimal.target);
+                    optimizationScore += Math.max(0, 100 - (distance / maxDistance * 100));
+                } else {
+                    // Toggle settings have binary optimization
+                    optimizationScore += getOptimalToggle(setting.id) === setting.value ? 100 : 30;
+                }
+            });
+            
+            const percentage = Math.round(optimizationScore / totalSettings);
+            const progressBar = document.getElementById('systemOptimization');
+            const percentageText = document.getElementById('optimizationPercent');
+            
+            if (progressBar) {
+                progressBar.style.width = `${percentage}%`;
+                
+                // Add pulsing effect for extreme values
+                if (percentage < 20 || percentage > 95) {
+                    progressBar.classList.add('pulsing');
+                } else {
+                    progressBar.classList.remove('pulsing');
+                }
+            }
+            
+            if (percentageText) {
+                percentageText.textContent = `${percentage}%`;
+            }
+        }
+
+        function getOptimalRange(settingId) {
+            const ranges = {
+                confidence: { min: 0, target: 75, max: 100 },
+                reality: { min: 0, target: 45, max: 100 },
+                productivity: { min: 0, target: 70, max: 100 },
+                luck: { min: 0, target: 60, max: 100 },
+                nostalgia: { min: 0, target: 65, max: 100 },
+                urgency: { min: 0, target: 60, max: 100 },
+                social: { min: 0, target: 50, max: 100 },
+                focus: { min: 0, target: 55, max: 100 },
+                wisdom: { min: 0, target: 40, max: 100 }
+            };
+            return ranges[settingId] || { min: 0, target: 50, max: 100 };
+        }
+
+        function getOptimalToggle(settingId) {
+            const optimal = {
+                expertise: false,
+                perfectionism: false,
+                motivation: true
+            };
+            return optimal[settingId] !== undefined ? optimal[settingId] : true;
+        }
+
+        function getRandomNotification(settingId, value) {
+            const notifications = {
+                confidence: [
+                    "🎭 Confidence levels adjusted. You now feel qualified to give TED talks on subjects you googled yesterday.",
+                    "💪 Warning: Excessive confidence may lead to volunteering for impossible deadlines.",
+                    "🎪 Reality check disabled. Proceed with caution (or don't, you're probably fine)."
+                ],
+                reality: [
+                    "🌍 Reality distortion field updated. Your problems are now 23% more imaginary.",
+                    "🕶️ Rose-colored glasses recalibrated. The world is definitely not on fire.",
+                    "🎭 Perception filters adjusted. Everything is probably fine, probably."
+                ],
+                productivity: [
+                    "📊 Productivity theater enhanced. You can now feel busy while accomplishing nothing.",
+                    "⚡ Warning: May cause excessive satisfaction from reorganizing digital folders.",
+                    "🎬 New feature unlocked: Expert-level procrastination with purpose."
+                ],
+                expertise: [
+                    "🎓 Instant expertise activated. You're now qualified to debate strangers on the internet.",
+                    "🧠 Knowledge simulation engaged. Confidence in inversely proportional to actual knowledge.",
+                    "📚 Wikipedia-level understanding achieved across all subjects."
+                ],
+                luck: [
+                    "🍀 Luck algorithms updated. Green lights and empty bathrooms await.",
+                    "🎲 Probability matrices adjusted. Your lottery ticket odds remain unchanged.",
+                    "✨ Serendipity engine calibrated. Prepare for mildly convenient coincidences."
+                ],
+                nostalgia: [
+                    "📸 Memory filter applied. Your childhood was definitely better than it actually was.",
+                    "🌈 Negative memories archived. Only the highlight reel remains accessible.",
+                    "⏰ Temporal bias engaged. Everything was simpler/better/cheaper in the good old days."
+                ],
+                urgency: [
+                    "⏰ Artificial deadline generator activated. Everything is now URGENT!",
+                    "🚨 Panic mode calibrated. Mild inconveniences now feel life-threatening.",
+                    "⚡ Stress amplifier engaged. Your heart rate thanks you for the exercise."
+                ],
+                social: [
+                    "🔋 Social battery recalibrated. Small talk tolerance adjusted to survivable levels.",
+                    "👥 Interaction protocols updated. Awkward silences now 34% less awkward.",
+                    "🎭 Social performance mode engaged. You can now pretend to care about weather discussions."
+                ],
+                perfectionism: [
+                    "✨ Perfectionism engine activated. Nothing will ever be good enough again.",
+                    "🎯 Standards raised to impossible levels. Productivity may plummet accordingly.",
+                    "💎 Quality control engaged. Prepare for analysis paralysis in 3... 2... 1..."
+                ],
+                focus: [
+                    "🎯 Attention span extended by 3.7 seconds. Use them wisely.",
+                    "🧠 Focus mode activated. You can now concentrate on concentrating.",
+                    "⚡ Neural pathways optimized. Shiny objects are now 12% less distracting."
+                ],
+                wisdom: [
+                    "🦉 Hindsight generator updated. You'll understand today's mistakes in 3-5 years.",
+                    "💡 Retrospective clarity enhanced. Past decisions now 47% more obviously stupid.",
+                    "🔮 Wisdom engine calibrated. Perfect advice for situations you'll never encounter again."
+                ],
+                motivation: [
+                    "🚀 Motivation randomizer engaged. Expect productivity bursts at 3 AM.",
+                    "⚡ Inspiration generator activated. May cause sudden urges to reorganize your life.",
+                    "🔥 Motivational algorithms updated. Warning: May result in ambitious New Year's resolutions."
+                ]
+            };
+            
+            const settingNotifications = notifications[settingId] || [
+                "⚙️ Settings updated successfully. No actual changes detected.",
+                "✅ Configuration saved. Your placebo is now 15% more effective.",
+                "🎭 System optimized. You should feel better about this for no particular reason."
+            ];
+            
+            return settingNotifications[Math.floor(Math.random() * settingNotifications.length)];
+        }
+
+        function showNotification(message) {
+            const toast = document.getElementById('notificationToast');
+            const content = document.getElementById('toastContent');
+            
+            content.innerHTML = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
+        function randomizeAll() {
+            settings.forEach(setting => {
+                if (setting.type === 'slider') {
+                    const randomValue = Math.floor(Math.random() * (setting.max - setting.min + 1)) + setting.min;
+                    updateSetting(setting.id, randomValue);
+                    document.getElementById(`slider-${setting.id}`).value = randomValue;
+                } else {
+                    const randomValue = Math.random() > 0.5;
+                    if (setting.value !== randomValue) {
+                        toggleSetting(setting.id);
+                    }
+                }
+            });
+            
+            showNotification("🎲 All settings randomized! Your personality has been scrambled like a digital egg.");
+        }
+
+        function resetToDefaults() {
+            const defaults = {
+                confidence: 75, reality: 42, productivity: 88, expertise: true,
+                luck: 60, nostalgia: 70, urgency: 85, social: 35,
+                perfectionism: false, focus: 25, wisdom: 90, motivation: true
+            };
+            
+            settings.forEach(setting => {
+                const defaultValue = defaults[setting.id];
+                if (defaultValue !== undefined) {
+                    if (setting.type === 'slider') {
+                        updateSetting(setting.id, defaultValue);
+                        document.getElementById(`slider-${setting.id}`).value = defaultValue;
+                    } else {
+                        if (setting.value !== defaultValue) {
+                            toggleSetting(setting.id);
+                        }
+                    }
+                }
+            });
+            
+            showNotification("🔄 Settings restored to factory defaults. You are now optimally mediocre.");
+        }
+
+        function enableChaosMode() {
+            chaosMode = !chaosMode;
+            const btn = event.target;
+            
+            if (chaosMode) {
+                btn.textContent = '🌪️ Disable Chaos';
+                btn.className = 'btn btn-warning';
+                startChaosMode();
+                showNotification("⚡ CHAOS MODE ACTIVATED! Reality.exe has stopped responding.");
+            } else {
+                btn.textContent = '⚡ Chaos Mode';
+                btn.className = 'btn btn-danger';
+                stopChaosMode();
+                showNotification("🛡️ Chaos mode disabled. Order tentatively restored.");
+            }
+        }
+
+        let chaosInterval;
+        function startChaosMode() {
+            chaosInterval = setInterval(() => {
+                const randomSetting = settings[Math.floor(Math.random() * settings.length)];
+                
+                if (randomSetting.type === 'slider') {
+                    const randomValue = Math.floor(Math.random() * (randomSetting.max - randomSetting.min + 1)) + randomSetting.min;
+                    updateSetting(randomSetting.id, randomValue);
+                    document.getElementById(`slider-${randomSetting.id}`).value = randomValue;
+                } else {
+                    toggleSetting(randomSetting.id);
+                }
+                
+                // Random notifications
+                if (Math.random() < 0.7) {
+                    const chaosMessages = [
+                        "🌪️ Chaos mode is rearranging your personality...",
+                        "⚡ Random setting modification detected!",
+                        "🎭 Your identity is now in flux!",
+                        "🔮 The universe is making decisions for you!",
+                        "💫 Embrace the beautiful chaos of existence!"
+                    ];
+                    showNotification(chaosMessages[Math.floor(Math.random() * chaosMessages.length)]);
+                }
+            }, 2000);
+        }
+
+        function stopChaosMode() {
+            if (chaosInterval) {
+                clearInterval(chaosInterval);
+                chaosInterval = null;
+            }
+        }
+
+        function triggerEasterEgg() {
+            easterEggCount++;
+            const messages = [
+                "🎭 You found the secret button! +1 to your curiosity score.",
+                "🌟 Easter egg #" + easterEggCount + " discovered! You're quite the explorer.",
+                "🎪 Congratulations! You've unlocked... absolutely nothing useful.",
+                "🎯 Achievement unlocked: Button Clicker Supreme!",
+                "🦄 You've accessed the secret developer appreciation button!",
+                "🎨 This button exists purely to satisfy your clicking urges.",
+                "🚀 Fun fact: You've now clicked this button " + easterEggCount + " times.",
+                "🎵 *plays victory sound that only exists in your imagination*",
+                "🏆 You win the award for most unnecessary clicks today!",
+                "🎪 The button appreciates your attention. It was feeling lonely."
+            ];
+            
+            showNotification(messages[Math.min(easterEggCount - 1, messages.length - 1)]);
+            
+            // Special effects for multiple clicks
+            if (easterEggCount === 5) {
+                document.body.style.animation = 'pulse 0.5s ease-in-out';
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                }, 500);
+            }
+            
+            if (easterEggCount === 10) {
+                // Create temporary confetti effect
+                createConfetti();
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.pointerEvents = 'none';
+                    confetti.style.zIndex = '9999';
+                    confetti.style.animation = 'fall 3s linear forwards';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }, i * 50);
+            }
+        }
+
+        // Add falling animation for confetti
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                to {
+                    transform: translateY(100vh) rotate(720deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize the application
+        function initializeApp() {
+            const grid = document.getElementById('settingsGrid');
+            
+            settings.forEach(setting => {
+                const card = createSettingCard(setting);
+                grid.appendChild(card);
+            });
+            
+            updateOptimization();
+            
+            // Welcome message
+            setTimeout(() => {
+                showNotification("🎉 Welcome to Unnecessary Settings™! Where placebo meets precision engineering.");
+            }, 1000);
+        }
+
+        // Add some dynamic effects
+        function addDynamicEffects() {
+            // Parallax effect for floating orbs
+            window.addEventListener('mousemove', (e) => {
+                const orbs = document.querySelectorAll('.orb');
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                
+                orbs.forEach((orb, index) => {
+                    const speed = (index + 1) * 0.5;
+                    orb.style.transform += ` translate(${x * speed}px, ${y * speed}px)`;
+                });
+            });
+            
+            // Intersection Observer for animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'slideInUp 0.6s ease-out';
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.setting-card').forEach(card => {
+                observer.observe(card);
+            });
+        }
+
+        // Initialize everything when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+            addDynamicEffects();
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'r':
+                        e.preventDefault();
+                        randomizeAll();
+                        break;
+                    case 'd':
+                        e.preventDefault();
+                        resetToDefaults();
+                        break;
+                    case 'c':
+                        e.preventDefault();
+                        enableChaosMode();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
