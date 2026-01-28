@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unnecessary Settings Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .setting-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .setting-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .setting-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 15px 15px 0 0;
+        }
+
+        .setting-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .setting-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .setting-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .setting-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .slider-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e0e0e0;
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .value-display {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle.active::after {
+            transform: translateX(30px);
+        }
+
+        .dropdown {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .status-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .status-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+            text-align: center;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .status-label {
+            font-weight: 500;
+        }
+
+        .status-value {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 15px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: translateX(400px);
+            transition: all 0.4s ease;
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .notification-message {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .reset-button {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+            display: block;
+            margin: 20px auto 0;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
+        }
+
+        .glitch {
+            animation: glitch 0.5s ease-in-out;
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-2px); }
+            40% { transform: translateX(2px); }
+            60% { transform: translateX(-1px); }
+            80% { transform: translateX(1px); }
+        }
+
+        .shimmer {
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .bounce {
+            animation: bounce 0.6s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .settings-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .notification {
+                right: 15px;
+                left: 15px;
+                max-width: none;
+                transform: translateY(-100px);
+            }
+            
+            .notification.show {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header fade-in">
+            <h1>⚙️ Unnecessary Settings Simulator</h1>
+            <p>Fine-tune your reality with precision you never knew you didn't need</p>
+        </header>
+
+        <div class="settings-grid" id="settingsGrid">
+            <!-- Settings will be dynamically generated -->
+        </div>
+
+        <div class="status-panel fade-in">
+            <div class="status-title">🔬 System Analysis</div>
+            <div class="status-grid" id="statusGrid">
+                <!-- Status items will be dynamically generated -->
+            </div>
+            <button class="reset-button" onclick="resetAllSettings()">🔄 Reset Reality Parameters</button>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <div class="notification-title" id="notificationTitle"></div>
+        <div class="notification-message" id="notificationMessage"></div>
+    </div>
+
+    <script>
+        class UnnecessarySettingsSimulator {
+            constructor() {
+                this.settings = {
+                    confidence: { value: 73, min: 0, max: 100, type: 'slider' },
+                    reality: { value: 42, min: -50, max: 150, type: 'slider' },
+                    procrastination: { value: 85, min: 0, max: 100, type: 'slider' },
+                    monday: { value: 12, min: 0, max: 100, type: 'slider' },
+                    existentialDread: { value: 67, min: 0, max: 100, type: 'slider' },
+                    caffeine: { value: 90, min: 0, max: 200, type: 'slider' },
+                    socialBattery: { value: 23, min: 0, max: 100, type: 'slider' },
+                    adulting: { value: 31, min: 0, max: 100, type: 'slider' },
+                    motivation: { value: 18, min: 0, max: 100, type: 'slider' },
+                    sleepDebt: { value: 156, min: 0, max: 300, type: 'slider' },
+                    imposterSyndrome: { value: true, type: 'toggle' },
+                    debugMode: { value: false, type: 'toggle' },
+                    winterMode: { value: true, type: 'toggle' },
+                    darkMode: { value: false, type: 'toggle' },
+                    perfectionism: { value: false, type: 'toggle' },
+                    timezone: { value: 'Existential Standard Time', options: ['GMT', 'PST', 'EST', 'Existential Standard Time', 'Procrastination Time Zone', 'Coffee O\'Clock'], type: 'dropdown' },
+                    personality: { value: 'Chaotic Neutral', options: ['Lawful Good', 'Chaotic Neutral', 'True Neutral', 'Chaotic Good', 'Lawful Evil', 'Debugging Mode'], type: 'dropdown' },
+                    weatherMood: { value: 'Perpetually Cloudy', options: ['Sunny Disposition', 'Perpetually Cloudy', 'Stormy', 'Foggy Logic', 'Partly Functional'], type: 'dropdown' }
+                };
+
+                this.settingsConfig = {
+                    confidence: {
+                        title: 'Confidence Level',
+                        description: 'Adjust your self-assurance. Warning: Values over 90% may cause excessive LinkedIn posting.',
+                        icon: '💪',
+                        color: '#4CAF50',
+                        unit: '%'
+                    },
+                    reality: {
+                        title: 'Reality Adjustment',
+                        description: 'Fine-tune your perception of reality. Negative values enter simulation mode.',
+                        icon: '🌍',
+                        color: '#2196F3',
+                        unit: '%'
+                    },
+                    procrastination: {
+                        title: 'Procrastination Factor',
+                        description: 'Control your tendency to delay tasks. High values increase "I\'ll do it tomorrow" frequency.',
+                        icon: '⏰',
+                        color: '#FF9800',
+                        unit: '%'
+                    },
+                    monday: {
+                        title: 'Monday Tolerance',
+                        description: 'Adjust your ability to cope with Mondays. Low values may cause existential crisis.',
+                        icon: '📅',
+                        color: '#795548',
+                        unit: '%'
+                    },
+                    existentialDread: {
+                        title: 'Existential Dread',
+                        description: 'Manage your philosophical anxiety levels. Optimal range: 40-60% for creative output.',
+                        icon: '🤔',
+                        color: '#9C27B0',
+                        unit: '%'
+                    },
+                    caffeine: {
+                        title: 'Caffeine Dependency',
+                        description: 'Monitor your coffee requirements. Values over 100% enter superhuman productivity mode.',
+                        icon: '☕',
+                        color: '#8D6E63',
+                        unit: 'mg/L'
+                    },
+                    socialBattery: {
+                        title: 'Social Battery',
+                        description: 'Current social energy reserves. Automatically depletes during meetings.',
+                        icon: '🔋',
+                        color: '#4CAF50',
+                        unit: '%'
+                    },
+                    adulting: {
+                        title: 'Adulting Capability',
+                        description: 'Your ability to perform adult responsibilities. Decreases naturally over time.',
+                        icon: '👔',
+                        color: '#607D8B',
+                        unit: '%'
+                    },
+                    motivation: {
+                        title: 'Motivation Level',
+                        description: 'Current drive to accomplish tasks. Mysteriously disappears when needed most.',
+                        icon: '🎯',
+                        color: '#E91E63',
+                        unit: '%'
+                    },
+                    sleepDebt: {
+                        title: 'Sleep Debt',
+                        description: 'Accumulated sleep deficit. Higher values increase coffee requirements exponentially.',
+                        icon: '😴',
+                        color: '#3F51B5',
+                        unit: 'hours'
+                    },
+                    imposterSyndrome: {
+                        title: 'Impostor Syndrome',
+                        description: 'Toggle feelings of professional inadequacy despite evidence of competence.',
+                        icon: '🎭',
+                        color: '#FF5722'
+                    },
+                    debugMode: {
+                        title: 'Debug Mode',
+                        description: 'Enable detailed logging of life events. May cause excessive self-analysis.',
+                        icon: '🐛',
+                        color: '#009688'
+                    },
+                    winterMode: {
+                        title: 'Winter Mode',
+                        description: 'Hibernate features activated. Increases blanket dependency and soup consumption.',
+                        icon: '❄️',
+                        color: '#00BCD4'
+                    },
+                    darkMode: {
+                        title: 'Dark Mode Life',
+                        description: 'Apply dark theme to existence. Reduces eye strain from harsh realities.',
+                        icon: '🌙',
+                        color: '#424242'
+                    },
+                    perfectionism: {
+                        title: 'Perfectionism',
+                        description: 'Enable impossibly high standards. Warning: May prevent task completion.',
+                        icon: '✨',
+                        color: '#FFC107'
+                    },
+                    timezone: {
+                        title: 'Operating Timezone',
+                        description: 'Select your temporal reference frame. Some zones may not align with reality.',
+                        icon: '🌐',
+                        color: '#673AB7'
+                    },
+                    personality: {
+                        title: 'Personality Type',
+                        description: 'Choose your default behavioral framework. Changes take effect after restart.',
+                        icon: '🎨',
+                        color: '#E91E63'
+                    },
+                    weatherMood: {
+                        title: 'Weather-Mood Sync',
+                        description: 'Synchronize emotional state with weather patterns. May cause seasonal dependencies.',
+                        icon: '🌦️',
+                        color: '#2196F3'
+                    }
+                };
+
+                this.init();
+            }
+
+            init() {
+                this.renderSettings();
+                this.updateStatus();
+                this.startRandomUpdates();
+            }
+
+            renderSettings() {
+                const container = document.getElementById('settingsGrid');
+                container.innerHTML = '';
+
+                Object.entries(this.settings).forEach(([key, setting]) => {
+                    const config = this.settingsConfig[key];
+                    const card = document.createElement('div');
+                    card.className = 'setting-card fade-in';
+                    card.style.animationDelay = `${Math.random() * 0.5}s`;
+
+                    let controlHTML = '';
+                    if (setting.type === 'slider') {
+                        controlHTML = `
+                            <div class="slider-container">
+                                <input type="range" class="slider" 
+                                       min="${setting.min}" max="${setting.max}" 
+                                       value="${setting.value}" 
+                                       onchange="simulator.updateSetting('${key}', this.value)"
+                                       oninput="simulator.updateSetting('${key}', this.value)">
+                                <div class="value-display" id="value-${key}">
+                                    ${setting.value}${config.unit || ''}
+                                </div>
+                            </div>
+                        `;
+                    } else if (setting.type === 'toggle') {
+                        controlHTML = `
+                            <div class="toggle-container">
+                                <span>Disabled</span>
+                                <div class="toggle ${setting.value ? 'active' : ''}" 
+                                     onclick="simulator.toggleSetting('${key}')">
+                                </div>
+                                <span>Enabled</span>
+                            </div>
+                        `;
+                    } else if (setting.type === 'dropdown') {
+                        const options = setting.options.map(option => 
+                            `<option value="${option}" ${option === setting.value ? 'selected' : ''}>${option}</option>`
+                        ).join('');
+                        controlHTML = `
+                            <select class="dropdown" onchange="simulator.updateSetting('${key}', this.value)">
+                                ${options}
+                            </select>
+                        `;
+                    }
+
+                    card.innerHTML = `
+                        <div class="setting-header">
+                            <div class="setting-icon" style="background-color: ${config.color}">
+                                ${config.icon}
+                            </div>
+                            <div class="setting-title">${config.title}</div>
+                        </div>
+                        <div class="setting-description">${config.description}</div>
+                        ${controlHTML}
+                    `;
+
+                    container.appendChild(card);
+                });
+            }
+
+            updateSetting(key, value) {
+                const setting = this.settings[key];
+                if (setting.type === 'slider') {
+                    setting.value = parseInt(value);
+                    document.getElementById(`value-${key}`).textContent = 
+                        `${setting.value}${this.settingsConfig[key].unit || ''}`;
+                } else {
+                    setting.value = value;
+                }
+
+                this.updateStatus();
+                this.triggerEffect(key, value);
+            }
+
+            toggleSetting(key) {
+                this.settings[key].value = !this.settings[key].value;
+                const toggle = event.target;
+                toggle.classList.toggle('active');
+                
+                this.updateStatus();
+                this.triggerEffect(key, this.settings[key].value);
+            }
+
+            updateStatus() {
+                const statusGrid = document.getElementById('statusGrid');
+                const stats = this.calculateStats();
+                
+                statusGrid.innerHTML = Object.entries(stats).map(([key, value]) => `
+                    <div class="status-item shimmer">
+                        <span class="status-label">${key}</span>
+                        <span class="status-value">${value}</span>
+                    </div>
+                `).join('');
+            }
+
+            calculateStats() {
+                const s = this.settings;
+                return {
+                    'Productivity Index': `${Math.max(0, s.motivation.value - s.procrastination.value + (s.caffeine.value > 100 ? 25 : 0))}%`,
+                    'Sanity Level': `${Math.max(0, 100 - s.existentialDread.value - (s.sleepDebt.value / 3))}%`,
+                    'Coffee Dependency': s.caffeine.value > 150 ? 'Critical' : s.caffeine.value > 100 ? 'High' : 'Moderate',
+                    'Reality Coherence': s.reality.value < 0 ? 'Matrix Mode' : s.reality.value > 100 ? 'Hyperreal' : 'Stable',
+                    'Social Function': s.socialBattery.value > 70 ? 'Extroverted' : s.socialBattery.value > 30 ? 'Balanced' : 'Hermit Mode',
+                    'Adulting Score': s.adulting.value > 70 ? 'Functional' : s.adulting.value > 30 ? 'Struggling' : 'Peter Pan Syndrome',
+                    'Debug Status': s.debugMode.value ? 'Verbose Logging' : 'Silent Running',
+                    'Life Version': `${Math.floor(Math.random() * 5) + 1}.${Math.floor(Math.random() * 10)}.${Math.floor(Math.random() * 100)}`
+                };
+            }
+
+            triggerEffect(key, value) {
+                const effects = {
+                    confidence: () => {
+                        if (value > 90) {
+                            this.showNotification('Confidence Overflow', 'You\'re now qualified to give unsolicited advice on LinkedIn.');
+                        }
+                    },
+                    reality: () => {
+                        if (value < 0) {
+                            document.body.classList.add('glitch');
+                            setTimeout(() => document.body.classList.remove('glitch'), 500);
+                            this.showNotification('Matrix Mode Activated', 'Welcome to the desert of the real.');
+                        }
+                    },
+                    procrastination: () => {
+                        if (value > 95) {
+                            this.showNotification('Procrastination Maximum', 'Task successfully scheduled for next decade.');
+                        }
+                    },
+                    caffeine: () => {
+                        if (value > 150) {
+                            this.showNotification('Caffeine Overdrive', 'You can now see individual photons.');
+                        }
+                    },
+                    monday: () => {
+                        if (value < 20) {
+                            this.showNotification('Monday Intolerance', 'Garfield mode activated. Lasagna consumption increased.');
+                        }
+                    },
+                    imposterSyndrome: () => {
+                        if (value) {
+                            this.showNotification('Impostor Syndrome Enabled', 'Everyone else definitely knows what they\'re doing.');
+                        } else {
+                            this.showNotification('Confidence Restored', 'You belong here. Probably.');
+                        }
+                    },
+                    perfectionism: () => {
+                        if (value) {
+                            this.showNotification('Perfectionism Active', 'Nothing will ever be good enough. Enjoy!');
+                        }
+                    }
+                };
+
+                if (effects[key]) {
+                    effects[key]();
+                }
+            }
+
+            showNotification(title, message) {
+                const notification = document.getElementById('notification');
+                const titleEl = document.getElementById('notificationTitle');
+                const messageEl = document.getElementById('notificationMessage');
+
+                titleEl.textContent = title;
+                messageEl.textContent = message;
+                
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 4000);
+            }
+
+            startRandomUpdates() {
+                setInterval(() => {
+                    // Randomly fluctuate certain values
+                    const volatileSettings = ['socialBattery', 'motivation', 'sleepDebt', 'existentialDread'];
+                    const randomSetting = volatileSettings[Math.floor(Math.random() * volatileSettings.length)];
+                    
+                    if (Math.random() < 0.3) { // 30% chance every interval
+                        const setting = this.settings[randomSetting];
+                        const change = (Math.random() - 0.5) * 10; // Random change between -5 and +5
+                        const newValue = Math.max(setting.min, Math.min(setting.max, setting.value + change));
+                        
+                        setting.value = Math.round(newValue);
+                        
+                        // Update UI
+                        const valueDisplay = document.getElementById(`value-${randomSetting}`);
+                        if (valueDisplay) {
+                            valueDisplay.textContent = `${setting.value}${this.settingsConfig[randomSetting].unit || ''}`;
+                            valueDisplay.parentElement.parentElement.classList.add('bounce');
+                            setTimeout(() => {
+                                valueDisplay.parentElement.parentElement.classList.remove('bounce');
+                            }, 600);
+                        }
+                        
+                        this.updateStatus();
+                    }
+                }, 5000);
+            }
+
+            resetAllSettings() {
+                // Reset to default values
+                const defaults = {
+                    confidence: 73, reality: 42, procrastination: 85, monday: 12,
+                    existentialDread: 67, caffeine: 90, socialBattery: 23, adulting: 31,
+                    motivation: 18, sleepDebt: 156, imposterSyndrome: true, debugMode: false,
+                    winterMode: true, darkMode: false, perfectionism: false,
+                    timezone: 'Existential Standard Time', personality: 'Chaotic Neutral',
+                    weatherMood: 'Perpetually Cloudy'
+                };
+
+                Object.entries(defaults).forEach(([key, value]) => {
+                    this.settings[key].value = value;
+                });
+
+                this.renderSettings();
+                this.updateStatus();
+                this.showNotification('Reality Reset Complete', 'All parameters restored to factory defaults.');
+            }
+        }
+
+        // Initialize the simulator
+        const simulator = new UnnecessarySettingsSimulator();
+
+        // Global function for reset button
+        function resetAllSettings() {
+            simulator.resetAllSettings();
+        }
+    </script>
+</body>
+</html>
