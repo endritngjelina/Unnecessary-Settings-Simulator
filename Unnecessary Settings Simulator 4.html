@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unnecessary Settings Simulator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.1);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--gradient);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            cursor: none;
+        }
+        
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+        
+        .custom-cursor.hover {
+            transform: scale(1.5);
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+        
+        @keyframes backgroundShift {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(60deg); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideDown 0.8s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+        
+        .header p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .setting-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideUp 0.6s ease-out backwards;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .setting-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .setting-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .setting-card:hover::before {
+            left: 100%;
+        }
+        
+        .setting-card:hover::after {
+            opacity: 1;
+        }
+        
+        .setting-card:nth-child(1) { animation-delay: 0.1s; }
+        .setting-card:nth-child(2) { animation-delay: 0.2s; }
+        .setting-card:nth-child(3) { animation-delay: 0.3s; }
+        .setting-card:nth-child(4) { animation-delay: 0.4s; }
+        .setting-card:nth-child(5) { animation-delay: 0.5s; }
+        .setting-card:nth-child(6) { animation-delay: 0.6s; }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .setting-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 40px 80px -12px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .setting-card.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.3), var(--shadow);
+        }
+        
+        .setting-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .setting-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .setting-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .setting-card:hover .setting-icon::before {
+            opacity: 1;
+        }
+        
+        .setting-card:hover .setting-icon {
+            transform: rotate(10deg) scale(1.1);
+        }
+        
+        .setting-info h3 {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .setting-info p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+        }
+        
+        .slider-container {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .slider:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scaleY(1.2);
+        }
+        
+        .slider:active {
+            transform: scaleY(1.4);
+        }
+        
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #fff, #e2e8f0);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .slider::-webkit-slider-thumb:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            transform: scale(1.1);
+            background: linear-gradient(45deg, #fff, #cbd5e1);
+        }
+        
+        .slider::-webkit-slider-thumb:active {
+            transform: scale(1.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+        
+        .slider-track {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+        }
+        
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .value-display {
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            min-height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .value-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.3s ease;
+        }
+        
+        .value-display.updating::before {
+            left: 100%;
+        }
+        
+        .value-display:hover {
+            background: rgba(0, 0, 0, 0.3);
+            transform: scale(1.02);
+        }
+        
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 1.5rem 0;
+        }
+        
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .toggle.active {
+            background: var(--success);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .toggle.active:hover {
+            background: #059669;
+        }
+        
+        .toggle::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .toggle:hover::before {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .toggle.active::before {
+            transform: translateX(30px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            color: white;
+            box-shadow: var(--shadow);
+            transform: translateX(400px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            max-width: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .notification::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            animation: notificationProgress 3s linear;
+        }
+        
+        @keyframes notificationProgress {
+            from { height: 100%; }
+            to { height: 0%; }
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification:hover {
+            transform: translateX(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .chaos-mode {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53, #ff6b9d, #c44569);
+            background-size: 400% 400%;
+            animation: chaosGradient 2s ease infinite;
+        }
+        
+        @keyframes chaosGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .glitch {
+            animation: glitch 0.3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        .stats-panel {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.8s ease-out 0.7s backwards;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stat-item:hover::before {
+            opacity: 1;
+        }
+        
+        .stat-item:hover .stat-value {
+            transform: scale(1.1);
+            color: var(--primary);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .settings-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .setting-card { padding: 1.5rem; }
+            .header h1 { font-size: 2.5rem; }
+            .notification { right: 1rem; top: 1rem; max-width: calc(100vw - 2rem); }
+            body { cursor: auto; }
+            .custom-cursor { display: none; }
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            pointer-events: none;
+            animation: ripple 0.6s ease-out;
+        }
+        
+        @keyframes ripple {
+            from {
+                transform: scale(0);
+                opacity: 1;
+            }
+            to {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+        
+        .setting-card.high-value {
+            border-color: rgba(16, 185, 129, 0.6);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.2), var(--shadow);
+        }
+        
+        .setting-card.medium-value {
+            border-color: rgba(245, 158, 11, 0.6);
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.2), var(--shadow);
+        }
+        
+        .setting-card.low-value {
+            border-color: rgba(239, 68, 68, 0.6);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.2), var(--shadow);
+        }
+        
+        .easter-egg {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .easter-egg:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            50% { box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+    
+    <div class="custom-cursor" id="customCursor"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>Unnecessary Settings</h1>
+            <p>Customize your reality with precision you never knew you needed</p>
+        </div>
+        
+        <div class="settings-grid">
+            <div class="setting-card">
+                <div class="setting-header">
+                    <div class="setting-icon" style="background: linear-gradient(45deg, #ff6b6b, #ff8e53);">💪</div>
+                    <div class="setting-info">
+                        <h3>Confidence Level</h3>
+                        <p>Adjust your internal swagger algorithm</p>
+                    </div>
+                </div>
+                <div class="slider-container">
+                    <input type="range" class="slider" id="confidence" min="0" max="100" value="50">
+                    <div class="slider-track" style="background: linear-gradient(45deg, #ff6b6b, #ff8e53);"></div>
+                    <div class="slider-labels">
+                        <span>Impostor</span>
+                        <span>CEO Energy</span>
+                    </div>
+                </div>
+                <div class="value-display" id="confidenceDisplay">Moderately Confident</div>
+            </div>
+            
+            <div class="setting-card">
+                <div class="setting-header">
+                    <div class="setting-icon" style="background: linear-gradient(45deg, #667eea, #764ba2);">🌍</div>
+                    <div class="setting-info">
+                        <h3>Reality Adjustment</h3>
+                        <p>Fine-tune your perception matrix</p>
+                    </div>
+                </div>
+                <div class="slider-container">
+                    <input type="range" class="slider" id="reality" min="0" max="100" value="75">
+                    <div class="slider-track" style="background: linear-gradient(45deg, #667eea, #764ba2);"></div>
+                    <div class="slider-labels">
+                        <span>Fantasy</span>
+                        <span>Harsh Truth</span>
+                    </div>
+                </div>
+                <div class="value-display" id="realityDisplay">Mostly Real</div>
+            </div>
+            
+            <div class="setting-card">
+                <div class="setting-header">
+                    <div class="setting-icon" style="background: linear-gradient(45deg, #ffeaa7, #fdcb6e);">☕</div>
+                    <div class="setting-info">
+                        <h3>Procrastination Index</h3>
+                        <p>Optimize your delay tactics</p>
+                    </div>
+                </div>
+                <div class="slider-container">
+                    <input type="range" class="slider" id="procrastination" min="0" max="100" value="30">
+                    <div class="slider-track" style="background: linear-gradient(45deg, #ffeaa7, #fdcb6e);"></div>
+                    <div class="slider-labels">
+                        <span>Productive</span>
+                        <span>Netflix Mode</span>
+                    </div>
+                </div>
+                <div class="value-display" id="procrastinationDisplay">Mildly Distracted</div>
+            </div>
+            
+            <div class="setting-card">
+                <div class="setting-header">
+                    <div class="setting-icon" style="background: linear-gradient(45deg, #00b894, #00cec9);">🧠</div>
+                    <div class="setting-info">
+                        <h3>Overthinking Intensity</h3>
+                        <p>Control your mental gymnastics</p>
+                    </div>
+                </div>
+                <div class="slider-container">
+                    <input type="range" class="slider" id="overthinking" min="0" max="100" value="60">
+                    <div class="slider-track" style="background: linear-gradient(45deg, #00b894, #00cec9);"></div>
+                    <div class="slider-labels">
+                        <span>Zen</span>
+                        <span>Analysis Paralysis</span>
+                    </div>
+                </div>
+                <div class="value-display" id="overthinkingDisplay">Moderately Anxious</div>
+            </div>
+            
+            <div class="setting-card">
+                <div class="setting-header">
+                    <div class="setting-icon" style="background: linear-gradient(45deg, #e17055, #d63031);">🎭</div>
+                    <div class="setting-info">
+                        <h3>Social Battery</h3>
+                        <p>Manage your people energy reserves</p>
+                    </div>
+                </div>
+                <div class="slider-container">
+                    <input type="range" class="slider" id="socialBattery" min="0" max="100" value="40">
+                    <div class="slider-track" style="background: linear-gradient(45deg, #e17055, #d63031);"></div>
+                    <div class="slider-labels">
+                        <span>Hermit</span>
+                        <span>Party Animal</span>
+                    </div>
+                </div>
+                <div class="value-display" id="socialDisplay">Selective Socializing</div>
+            </div>
+            
+            <div class="setting-card">
+                <div class="setting-header">
+                    <div class="setting-icon" style="background: linear-gradient(45deg, #a29bfe, #6c5ce7);">🎯</div>
+                    <div class="setting-info">
+                        <h3>Motivation Booster</h3>
+                        <p>Calibrate your drive to succeed</p>
+                    </div>
+                </div>
+                <div class="slider-container">
+                    <input type="range" class="slider" id="motivation" min="0" max="100" value="70">
+                    <div class="slider-track" style="background: linear-gradient(45deg, #a29bfe, #6c5ce7);"></div>
+                    <div class="slider-labels">
+                        <span>Couch Potato</span>
+                        <span>Unstoppable</span>
+                    </div>
+                </div>
+                <div class="value-display" id="motivationDisplay">Ready for Action</div>
+            </div>
+        </div>
+        
+        <div class="settings-grid">
+            <div class="setting-card">
+                <div class="setting-header">
+                    <div class="setting-icon" style="background: linear-gradient(45deg, #fd79a8, #e84393);">🎪</div>
+                    <div class="setting-info">
+                        <h3>Chaos Mode</h3>
+                        <p>Embrace the beautiful madness</p>
+                    </div>
+                </div>
+                <div class="toggle-container">
+                    <span style="color: rgba(255, 255, 255, 0.8);">Enable Chaos</span>
+                    <div class="toggle" id="chaosToggle"></div>
+                </div>
+                <div class="value-display" id="chaosDisplay">Order Maintained</div>
+            </div>
+            
+            <div class="setting-card">
+                <div class="setting-header">
+                    <div class="setting-icon" style="background: linear-gradient(45deg, #00cec9, #0984e3);">🔮</div>
+                    <div class="setting-info">
+                        <h3>Luck Factor</h3>
+                        <p>Adjust probability in your favor</p>
+                    </div>
+                </div>
+                <div class="slider-container">
+                    <input type="range" class="slider" id="luck" min="0" max="100" value="50">
+                    <div class="slider-track" style="background: linear-gradient(45deg, #00cec9, #0984e3);"></div>
+                    <div class="slider-labels">
+                        <span>Murphy's Law</span>
+                        <span>Lucky Charm</span>
+                    </div>
+                </div>
+                <div class="value-display" id="luckDisplay">Balanced Fortune</div>
+            </div>
+        </div>
+        
+        <div class="stats-panel">
+            <h3 style="color: white; text-align: center; margin-bottom: 2rem; font-size: 1.5rem;">System Diagnostics</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalAdjustments">0</div>
+                    <div class="stat-label">Total Adjustments</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="chaosLevel">0%</div>
+                    <div class="stat-label">Chaos Level</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="realityIntegrity">100%</div>
+                    <div class="stat-label">Reality Integrity</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="systemUptime">0s</div>
+                    <div class="stat-label">Session Time</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="easter-egg" id="easterEgg">🎨</div>
+    
+    <div class="notification" id="notification"></div>
+    
+    <script>
+        class UnnecessarySettings {
+            constructor() {
+                this.settings = {
+                    confidence: 50,
+                    reality: 75,
+                    procrastination: 30,
+                    overthinking: 60,
+                    socialBattery: 40,
+                    motivation: 70,
+                    luck: 50,
+                    chaos: false
+                };
+                
+                this.stats = {
+                    totalAdjustments: 0,
+                    startTime: Date.now()
+                };
+                
+                this.messages = {
+                    confidence: [
+                        "You're practically radiating CEO energy!",
+                        "Confidence level: Mildly intimidating",
+                        "You could probably negotiate with a brick wall",
+                        "Impostor syndrome has left the chat",
+                        "You're giving off main character vibes"
+                    ],
+                    reality: [
+                        "Reality.exe has encountered an error",
+                        "Living in a fantasy world (literally)",
+                        "Your perception filter is working overtime",
+                        "Welcome to the matrix of your own making",
+                        "Reality check: You're doing great!"
+                    ],
+                    procrastination: [
+                        "Netflix is calling your name",
+                        "You'll definitely start tomorrow",
+                        "Productivity is overrated anyway",
+                        "You've mastered the art of delay",
+                        "Time is a social construct"
+                    ],
+                    overthinking: [
+                        "Your brain is running a marathon",
+                        "Analysis paralysis mode: ACTIVATED",
+                        "You've considered every possible outcome",
+                        "Your mind palace is overcrowded",
+                        "Thoughts are looping at maximum capacity"
+                    ],
+                    socialBattery: [
+                        "People are overrated (today)",
+                        "Your social energy reserves are low",
+                        "Time to become a hermit",
+                        "Small talk difficulty: EXPERT",
+                        "You're selectively social"
+                    ],
+                    motivation: [
+                        "You could conquer mountains!",
+                        "Motivation levels: Through the roof",
+                        "You're unstoppable force of nature",
+                        "Nothing can stop you now",
+                        "Your inner fire is blazing"
+                    ],
+                    luck: [
+                        "The universe is conspiring in your favor",
+                        "Lucky charms are working overtime",
+                        "Murphy's Law has been suspended",
+                        "Fortune smiles upon you",
+                        "Probability bends to your will"
+                    ],
+                    chaos: [
+                        "CHAOS REIGNS SUPREME!",
+                        "Order is just chaos in disguise",
+                        "Embrace the beautiful madness",
+                        "Reality has become... flexible",
+                        "Welcome to organized chaos"
+                    ]
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.updateAllDisplays();
+                this.startStatsUpdater();
+                this.showWelcomeMessage();
+            }
+            
+            setupEventListeners() {
+                // Sliders
+                Object.keys(this.settings).forEach(key => {
+                    if (key !== 'chaos') {
+                        const slider = document.getElementById(key);
+                        if (slider) {
+                            slider.addEventListener('input', (e) => {
+                                this.updateSetting(key, parseInt(e.target.value));
+                            });
+                        }
+                    }
+                });
+                
+                // Chaos toggle
+                document.getElementById('chaosToggle').addEventListener('click', () => {
+                    this.toggleChaos();
+                });
+                
+                // Easter egg
+                document.getElementById('easterEgg').addEventListener('click', () => {
+                    this.triggerEasterEgg();
+                });
+            }
+            
+            updateSetting(key, value) {
+                this.settings[key] = value;
+                this.stats.totalAdjustments++;
+                
+                this.updateSliderTrack(key, value);
+                this.updateDisplay(key, value);
+                this.updateStats();
+                
+                if (Math.random() < 0.3) {
+                    this.showNotification(this.getRandomMessage(key));
+                }
+                
+                this.applyVisualEffects();
+            }
+            
+            updateSliderTrack(key, value) {
+                const slider = document.getElementById(key);
+                const track = slider.parentElement.querySelector('.slider-track');
+                if (track) {
+                    track.style.width = `${value}%`;
+                }
+            }
+            
+            updateDisplay(key, value) {
+                const display = document.getElementById(key + 'Display');
+                if (display) {
+                    display.classList.add('updating');
+                    display.textContent = this.getDisplayText(key, value);
+                    display.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        display.style.transform = 'scale(1)';
+                        display.classList.remove('updating');
+                    }, 200);
+                }
+                
+                // Add value-based styling to cards
+                const card = document.getElementById(key)?.closest('.setting-card');
+                if (card) {
+                    card.classList.remove('high-value', 'medium-value', 'low-value');
+                    if (value >= 70) {
+                        card.classList.add('high-value');
+                    } else if (value >= 40) {
+                        card.classList.add('medium-value');
+                    } else {
+                        card.classList.add('low-value');
+                    }
+                }
+            }
+            
+            getDisplayText(key, value) {
+                const ranges = {
+                    confidence: ['Crippling Self-Doubt', 'Modest Confidence', 'Solid Self-Belief', 'Unshakeable Confidence', 'Borderline Arrogant'],
+                    reality: ['Pure Fantasy', 'Rose-Tinted Glasses', 'Mostly Realistic', 'Harsh Reality', 'Brutal Honesty'],
+                    procrastination: ['Productivity Machine', 'Mildly Distracted', 'Moderately Delayed', 'Master Procrastinator', 'Netflix Champion'],
+                    overthinking: ['Zen Master', 'Light Pondering', 'Moderate Analysis', 'Deep Contemplation', 'Analysis Paralysis'],
+                    socialBattery: ['Complete Hermit', 'Selective Socializing', 'Balanced Social Life', 'Social Butterfly', 'Life of the Party'],
+                    motivation: ['Couch Potato', 'Slight Motivation', 'Getting Things Done', 'Highly Motivated', 'Unstoppable Force'],
+                    luck: ['Murphy\'s Law Active', 'Below Average Luck', 'Balanced Fortune', 'Lucky Streak', 'Universe\'s Favorite']
+                };
+                
+                const index = Math.floor(value / 20);
+                return ranges[key][Math.min(index, ranges[key].length - 1)];
+            }
+            
+            toggleChaos() {
+                this.settings.chaos = !this.settings.chaos;
+                const toggle = document.getElementById('chaosToggle');
+                const display = document.getElementById('chaosDisplay');
+                
+                toggle.classList.toggle('active');
+                
+                if (this.settings.chaos) {
+                    display.textContent = 'CHAOS UNLEASHED!';
+                    document.body.classList.add('chaos-mode');
+                    this.activateChaosEffects();
+                    this.showNotification('Reality.exe has stopped working');
+                } else {
+                    display.textContent = 'Order Maintained';
+                    document.body.classList.remove('chaos-mode');
+                    this.deactivateChaosEffects();
+                    this.showNotification('System restored to normal parameters');
+                }
+                
+                this.stats.totalAdjustments++;
+                this.updateStats();
+            }
+            
+            activateChaosEffects() {
+                const cards = document.querySelectorAll('.setting-card');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('glitch');
+                    }, index * 100);
+                });
+                
+                // Randomize some settings
+                setTimeout(() => {
+                    this.randomizeSettings();
+                }, 1000);
+            }
+            
+            deactivateChaosEffects() {
+                const cards = document.querySelectorAll('.setting-card');
+                cards.forEach(card => {
+                    card.classList.remove('glitch');
+                });
+            }
+            
+            randomizeSettings() {
+                if (!this.settings.chaos) return;
+                
+                const settingsToRandomize = ['confidence', 'procrastination', 'overthinking'];
+                settingsToRandomize.forEach(key => {
+                    const randomValue = Math.floor(Math.random() * 101);
+                    const slider = document.getElementById(key);
+                    if (slider) {
+                        slider.value = randomValue;
+                        this.updateSetting(key, randomValue);
+                    }
+                });
+                
+                setTimeout(() => {
+                    this.randomizeSettings();
+                }, 3000 + Math.random() * 2000);
+            }
+            
+            triggerEasterEgg() {
+                const messages = [
+                    'You found the secret button! 🎉',
+                    'Adobe would be impressed by your curiosity',
+                    'This button does absolutely nothing useful',
+                    'Congratulations! You clicked a thing!',
+                    'Secret achievement unlocked: Button Presser',
+                    'The cake is a lie, but this button is real',
+                    'You have excellent clicking skills'
+                ];
+                
+                this.showNotification(messages[Math.floor(Math.random() * messages.length)]);
+                
+                const easterEgg = document.getElementById('easterEgg');
+                easterEgg.style.transform = 'scale(0.8) rotate(360deg)';
+                setTimeout(() => {
+                    easterEgg.style.transform = 'scale(1) rotate(0deg)';
+                }, 300);
+                
+                // Add some sparkles
+                this.createSparkles();
+            }
+            
+            createSparkles() {
+                for (let i = 0; i < 10; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.innerHTML = '✨';
+                    sparkle.style.position = 'fixed';
+                    sparkle.style.left = Math.random() * window.innerWidth + 'px';
+                    sparkle.style.top = Math.random() * window.innerHeight + 'px';
+                    sparkle.style.fontSize = '20px';
+                    sparkle.style.pointerEvents = 'none';
+                    sparkle.style.zIndex = '9999';
+                    sparkle.style.animation = 'sparkle 2s ease-out forwards';
+                    
+                    document.body.appendChild(sparkle);
+                    
+                    setTimeout(() => {
+                        sparkle.remove();
+                    }, 2000);
+                }
+            }
+            
+            applyVisualEffects() {
+                // Reality distortion effects
+                if (this.settings.reality < 30) {
+                    document.body.style.filter = 'hue-rotate(45deg) saturate(1.5)';
+                } else if (this.settings.reality > 80) {
+                    document.body.style.filter = 'grayscale(0.3) contrast(1.2)';
+                } else {
+                    document.body.style.filter = 'none';
+                }
+                
+                // Confidence effects
+                const header = document.querySelector('.header h1');
+                if (this.settings.confidence > 80) {
+                    header.style.textShadow = '0 0 30px rgba(255, 255, 255, 0.8)';
+                    header.style.transform = 'scale(1.02)';
+                } else {
+                    header.style.textShadow = '0 0 30px rgba(255, 255, 255, 0.5)';
+                    header.style.transform = 'scale(1)';
+                }
+            }
+            
+            updateAllDisplays() {
+                Object.keys(this.settings).forEach(key => {
+                    if (key !== 'chaos') {
+                        this.updateDisplay(key, this.settings[key]);
+                        this.updateSliderTrack(key, this.settings[key]);
+                    }
+                });
+            }
+            
+            updateStats() {
+                document.getElementById('totalAdjustments').textContent = this.stats.totalAdjustments;
+                
+                const chaosLevel = this.settings.chaos ? 
+                    Math.min(100, 50 + this.stats.totalAdjustments * 2) : 
+                    Math.max(0, this.stats.totalAdjustments - 10);
+                document.getElementById('chaosLevel').textContent = chaosLevel + '%';
+                
+                const realityIntegrity = Math.max(0, 100 - this.settings.reality + this.settings.confidence - (this.settings.chaos ? 30 : 0));
+                document.getElementById('realityIntegrity').textContent = realityIntegrity + '%';
+            }
+            
+            startStatsUpdater() {
+                setInterval(() => {
+                    const uptime = Math.floor((Date.now() - this.stats.startTime) / 1000);
+                    const minutes = Math.floor(uptime / 60);
+                    const seconds = uptime % 60;
+                    document.getElementById('systemUptime').textContent = 
+                        minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
+                }, 1000);
+            }
+            
+            getRandomMessage(key) {
+                const messages = this.messages[key];
+                return messages[Math.floor(Math.random() * messages.length)];
+            }
+            
+            showNotification(message) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            showWelcomeMessage() {
+                setTimeout(() => {
+                    this.showNotification('Welcome to the Unnecessary Settings Simulator! Adjust reality at your own risk.');
+                }, 1000);
+            }
+        }
+        
+        // Add sparkle animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes sparkle {
+                0% { 
+                    opacity: 1; 
+                    transform: translateY(0) scale(1) rotate(0deg); 
+                }
+                100% { 
+                    opacity: 0; 
+                    transform: translateY(-100px) scale(0.5) rotate(180deg); 
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hide loading overlay
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }, 1500);
+            
+            new UnnecessarySettings();
+            
+            // Custom cursor
+            const cursor = document.getElementById('customCursor');
+            let mouseX = 0, mouseY = 0;
+            let cursorX = 0, cursorY = 0;
+            
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+            
+            // Smooth cursor animation
+            function animateCursor() {
+                const dx = mouseX - cursorX;
+                const dy = mouseY - cursorY;
+                
+                cursorX += dx * 0.1;
+                cursorY += dy * 0.1;
+                
+                cursor.style.left = cursorX + 'px';
+                cursor.style.top = cursorY + 'px';
+                
+                requestAnimationFrame(animateCursor);
+            }
+            animateCursor();
+            
+            // Cursor hover effects
+            const interactiveElements = document.querySelectorAll('.setting-card, .toggle, .slider, .stat-item, .easter-egg');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+            });
+            
+            // Ripple effect on clicks
+            document.addEventListener('click', (e) => {
+                const ripple = document.createElement('div');
+                ripple.classList.add('ripple-effect');
+                
+                const rect = e.target.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                
+                if (e.target.closest('.setting-card, .toggle, .stat-item')) {
+                    e.target.style.position = 'relative';
+                    e.target.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                }
+            });
+        });
+        
+        // Add some extra interactive features
+        document.addEventListener('keydown', (e) => {
+            // Konami code easter egg
+            if (e.key === 'ArrowUp') {
+                const konamiSequence = window.konamiSequence || [];
+                konamiSequence.push('up');
+                window.konamiSequence = konamiSequence.slice(-10);
+                
+                if (konamiSequence.join(',').includes('up,up,down,down')) {
+                    document.body.style.transform = 'rotate(180deg)';
+                    setTimeout(() => {
+                        document.body.style.transform = 'rotate(0deg)';
+                    }, 2000);
+                }
+            }
+        });
+        
+        // Dynamic background particles
+        function createFloatingParticles() {
+            const particleCount = 15;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'fixed';
+                particle.style.width = '4px';
+                particle.style.height = '4px';
+                particle.style.background = 'rgba(255, 255, 255, 0.1)';
+                particle.style.borderRadius = '50%';
+                particle.style.pointerEvents = 'none';
+                particle.style.zIndex = '-1';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animation = `float ${5 + Math.random() * 10}s ease-in-out infinite`;
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                
+                document.body.appendChild(particle);
+            }
+        }
+        
+        // Add floating animation
+        const floatStyle = document.createElement('style');
+        floatStyle.textContent = `
+            @keyframes float {
+                0%, 100% { transform: translateY(0px) translateX(0px); }
+                25% { transform: translateY(-20px) translateX(10px); }
+                50% { transform: translateY(-40px) translateX(-5px); }
+                75% { transform: translateY(-20px) translateX(-10px); }
+            }
+        `;
+        document.head.appendChild(floatStyle);
+        
+        // Initialize particles
+        createFloatingParticles();
+        
+        // Add mouse trail effect
+        let mouseTrail = [];
+        document.addEventListener('mousemove', (e) => {
+            mouseTrail.push({x: e.clientX, y: e.clientY, time: Date.now()});
+            
+            // Limit trail length
+            mouseTrail = mouseTrail.filter(point => Date.now() - point.time < 500);
+            
+            if (Math.random() < 0.1) { // Reduce frequency for performance
+                const trail = document.createElement('div');
+                trail.style.position = 'fixed';
+                trail.style.left = e.clientX + 'px';
+                trail.style.top = e.clientY + 'px';
+                trail.style.width = '3px';
+                trail.style.height = '3px';
+                trail.style.background = 'rgba(255, 255, 255, 0.3)';
+                trail.style.borderRadius = '50%';
+                trail.style.pointerEvents = 'none';
+                trail.style.zIndex = '9998';
+                trail.style.transition = 'all 0.5s ease-out';
+                
+                document.body.appendChild(trail);
+                
+                setTimeout(() => {
+                    trail.style.opacity = '0';
+                    trail.style.transform = 'scale(0)';
+                }, 10);
+                
+                setTimeout(() => {
+                    trail.remove();
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>
