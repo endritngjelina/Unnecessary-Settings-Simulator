@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unnecessary Settings Simulator Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #7c3aed;
+            --success: #10b981;
+            --danger: #dc2626;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --border: #e2e8f0;
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --sidebar-bg: #f1f5f9;
+            --status-bg: #f8fafc;
+            --gradient-start: #6366f1;
+            --gradient-end: #8b5cf6;
+            --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .dark-mode {
+            --primary: #818cf8;
+            --primary-dark: #6366f1;
+            --secondary: #a78bfa;
+            --dark: #0f172a;
+            --light: #1e293b;
+            --gray: #64748b;
+            --border: #334155;
+            --card-bg: rgba(15, 23, 42, 0.95);
+            --sidebar-bg: #1e293b;
+            --status-bg: #0f172a;
+            --gradient-start: #4f46e5;
+            --gradient-end: #7c3aed;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            overflow-x: hidden;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        body.dark-mode {
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 2rem 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header::before {
+            content: '⚙️⚙️⚙️⚙️';
+            position: absolute;
+            font-size: 12rem;
+            opacity: 0.08;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            animation: spin 30s linear infinite;
+            z-index: 0;
+            letter-spacing: 2rem;
+        }
+
+        @keyframes spin {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 3;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(15deg);
+        }
+
+        .theme-toggle i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr 380px;
+            gap: 0;
+            min-height: 700px;
+        }
+
+        .sidebar {
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: 700px;
+            transition: var(--transition);
+        }
+
+        .sidebar h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .category-item {
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--border);
+        }
+
+        .dark-mode .category-item {
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        .category-item:hover {
+            background: rgba(79, 70, 229, 0.1);
+            transform: translateX(8px);
+            border-color: var(--primary);
+        }
+
+        .category-item.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+            border-color: transparent;
+        }
+
+        .category-emoji {
+            font-size: 1.4rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        .settings-panel {
+            padding: 2rem 2.5rem;
+            overflow-y: auto;
+            max-height: 700px;
+            background: var(--card-bg);
+            transition: var(--transition);
+        }
+
+        .settings-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary-dark);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .setting-group {
+            background: var(--sidebar-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+        }
+
+        .setting-group:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            flex: 1;
+            margin-right: 1.5rem;
+        }
+
+        .setting-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .setting-description {
+            font-size: 0.95rem;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .setting-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 32px;
+            background: #cbd5e1;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .dark-mode .toggle-switch {
+            background: #475569;
+        }
+
+        .toggle-switch.active {
+            background: linear-gradient(135deg, var(--success), #059669);
+        }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active::before {
+            transform: translateX(28px);
+        }
+
+        .slider-control {
+            width: 160px;
+            margin: 0 10px;
+        }
+
+        .slider {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--border);
+            outline: none;
+        }
+
+        .dark-mode .slider {
+            background: #334155;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background: var(--primary-dark);
+        }
+
+        .dropdown-control {
+            padding: 10px 15px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--card-bg);
+            min-width: 200px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--dark);
+        }
+
+        .dark-mode .dropdown-control {
+            color: #e2e8f0;
+            background: var(--dark);
+        }
+
+        .dropdown-control:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .color-picker {
+            width: 50px;
+            height: 36px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 2px;
+            background: white;
+        }
+
+        .status-panel {
+            background: var(--status-bg);
+            border-left: 1px solid var(--border);
+            padding: 2rem;
+            overflow-y: auto;
+            max-height: 700px;
+            transition: var(--transition);
+        }
+
+        .status-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem 1rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .progress-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .dark-mode .progress-bar {
+            background: #334155;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            100% { left: 100%; }
+        }
+
+        .activity-log {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+        }
+
+        .activity-log h4 {
+            margin-bottom: 1.25rem;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .log-entry {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-time {
+            color: var(--primary);
+            font-size: 0.85rem;
+            min-width: 60px;
+            font-weight: 600;
+        }
+
+        .log-action {
+            color: var(--dark);
+            flex: 1;
+        }
+
+        .dark-mode .log-action {
+            color: #e2e8f0;
+        }
+
+        .danger-zone {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border: 2px solid #f87171;
+            border-radius: 16px;
+            padding: 1.75rem;
+            margin-top: 2rem;
+            transition: var(--transition);
+        }
+
+        .dark-mode .danger-zone {
+            background: linear-gradient(135deg, #450a0a, #7f1d1d);
+            border-color: #ef4444;
+        }
+
+        .danger-zone h4 {
+            color: var(--danger);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.3rem;
+        }
+
+        .danger-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .danger-button {
+            background: linear-gradient(135deg, var(--danger), #b91c1c);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            flex: 1;
+            min-width: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .danger-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(220, 38, 38, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 24px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+        }
+
+        .modal h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-dark);
+        }
+
+        .modal p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: var(--dark);
+        }
+
+        .dark-mode .modal p {
+            color: #e2e8f0;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 1rem;
+            min-width: 180px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--sidebar-bg);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        .dark-mode .btn-secondary {
+            color: #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+            transform: translateY(-3px);
+        }
+
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 100;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+        }
+
+        .absurd-setting {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+        }
+
+        .dark-mode .absurd-setting {
+            background: linear-gradient(135deg, #78350f, #92400e);
+            border-color: #f97316;
+        }
+
+        .easter-egg {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            background: linear-gradient(135deg, #c7d2fe, #a5b4fc);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 2rem;
+            border: 2px solid var(--primary);
+        }
+
+        .dark-mode .easter-egg {
+            background: linear-gradient(135deg, #3730a3, #4f46e5);
+        }
+
+        .easter-egg.found {
+            opacity: 1;
+            animation: bounce 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-8px); }
+        }
+
+        .feature-highlight {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--warning);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+        }
+
+        @media (max-width: 1440px) {
+            .main-layout {
+                grid-template-columns: 280px 1fr 320px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 250px 1fr;
+            }
+            
+            .status-panel {
+                display: none;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .container {
+                margin: 10px;
+                border-radius: 20px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .setting-control {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .danger-buttons {
+                flex-direction: column;
+            }
+
+            .modal-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="feature-highlight">
+        <i class="fas fa-star"></i> RECRUITER EDITION
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-cogs"></i> Unnecessary Settings Simulator Pro</h1>
+                <p>Because every application needs 847 configuration options you'll never use - Now with AI-powered absurdity!</p>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+
+        <div class="main-layout">
+            <div class="sidebar">
+                <h3><i class="fas fa-folder"></i> Configuration Categories</h3>
+                <div class="category-item active" data-section="appearance">
+                    <span class="category-emoji">🎨</span>
+                    <span>Appearance & Themes</span>
+                </div>
+                <div class="category-item" data-section="audio">
+                    <span class="category-emoji">🔊</span>
+                    <span>Audio & Sounds</span>
+                </div>
+                <div class="category-item" data-section="performance">
+                    <span class="category-emoji">⚡</span>
+                    <span>Performance & Memory</span>
+                </div>
+                <div class="category-item" data-section="privacy">
+                    <span class="category-emoji">🔒</span>
+                    <span>Privacy & Security</span>
+                </div>
+                <div class="category-item" data-section="notifications">
+                    <span class="category-emoji">🔔</span>
+                    <span>Notifications & Alerts</span>
+                </div>
+                <div class="category-item" data-section="advanced">
+                    <span class="category-emoji">🤓</span>
+                    <span>Advanced Options</span>
+                </div>
+                <div class="category-item" data-section="experimental">
+                    <span class="category-emoji">🧪</span>
+                    <span>Experimental Features</span>
+                </div>
+                <div class="category-item" data-section="absurd">
+                    <span class="category-emoji">🤪</span>
+                    <span>Completely Absurd</span>
+                </div>
+            </div>
+
+            <div class="settings-panel">
+                <!-- Appearance Settings -->
+                <div class="settings-section active" id="appearance">
+                    <h2 class="section-title"><i class="fas fa-palette"></i> Appearance & Themes</h2>
+                    
+                    <div class="setting-group">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-quote-right"></i> Daily Motivation Quotes</div>
+                                <div class="setting-description">Receive inspirational quotes every 17 minutes to boost your productivity (or distract you)</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-film"></i> Enable Unnecessary Animations</div>
+                                <div class="setting-description">Add 47 different animation effects that serve no functional purpose</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-square"></i> Button Corner Roundness</div>
+                                <div class="setting-description">Precisely control how round your buttons are (because it matters)</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="range" class="slider" min="0" max="50" value="8" oninput="updateSetting('button-roundness', this.value)">
+                                <span id="button-roundness">8px</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-sliders-h"></i> Scroll Bar Opacity</div>
+                                <div class="setting-description">Make your scroll bars as invisible as your productivity</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="range" class="slider" min="0" max="100" value="50" oninput="updateSetting('scrollbar-opacity', this.value)">
+                                <span id="scrollbar-opacity">50%</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-mouse-pointer"></i> Cursor Blink Rate</div>
+                                <div class="setting-description">Control exactly how fast your cursor blinks (milliseconds matter!)</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="range" class="slider" min="100" max="2000" value="530" oninput="updateSetting('cursor-blink', this.value)">
+                                <span id="cursor-blink">530ms</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-box-shadow"></i> Shadow Intensity Level</div>
+                                <div class="setting-description">Because regular shadows are for amateurs</div>
+                            </div>
+                            <div class="setting-control">
+                                <select class="dropdown-control" onchange="updateSetting('shadow-level', this.value)">
+                                    <option value="none">No Shadow (Boring)</option>
+                                    <option value="subtle">Subtle (For minimalists)</option>
+                                    <option value="normal" selected>Normal (Default)</option>
+                                    <option value="dramatic">Dramatic (Eye-catching)</option>
+                                    <option value="extreme">Extreme (Attention-seeking)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-fill-drip"></i> Primary Accent Color</div>
+                                <div class="setting-description">Choose from 16.7 million colors (decision paralysis included)</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="color" class="color-picker" value="#4f46e5" onchange="updateSetting('accent-color', this.value)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audio Settings -->
+                <div class="settings-section" id="audio">
+                    <h2 class="section-title"><i class="fas fa-volume-up"></i> Audio & Sounds</h2>
+                    
+                    <div class="setting-group">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-mouse-pointer"></i> Enable Button Click Sounds</div>
+                                <div class="setting-description">Add satisfying *click* sounds to every button press</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-wave-square"></i> Hover Sound Effects</div>
+                                <div class="setting-description">Play subtle whoosh sounds when hovering over elements</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-keyboard"></i> Typing Sound Theme</div>
+                                <div class="setting-description">Choose your keyboard sound aesthetic</div>
+                            </div>
+                            <div class="setting-control">
+                                <select class="dropdown-control">
+                                    <option>Mechanical (Clicky)</option>
+                                    <option>Typewriter (Vintage)</option>
+                                    <option>Silent (Boring)</option>
+                                    <option>Space Age (Futuristic)</option>
+                                    <option>Underwater (Bubble sounds)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-coffee"></i> Background Ambience Volume</div>
+                                <div class="setting-description">For that perfect coffee shop coding experience</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="range" class="slider" min="0" max="100" value="25" oninput="updateSetting('ambience-volume', this.value)">
+                                <span id="ambience-volume">25%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Settings -->
+                <div class="settings-section" id="performance">
+                    <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> Performance & Memory</h2>
+                    
+                    <div class="setting-group">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-microchip"></i> CPU Usage Limiter</div>
+                                <div class="setting-description">Artificially limit CPU usage because why use all those cores?</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="range" class="slider" min="10" max="100" value="75" oninput="updateSetting('cpu-limit', this.value)">
+                                <span id="cpu-limit">75%</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-trash-alt"></i> Memory Garbage Collection Frequency</div>
+                                <div class="setting-description">How often to clean up memory (spoiler: the app will decide anyway)</div>
+                            </div>
+                            <div class="setting-control">
+                                <select class="dropdown-control">
+                                    <option>Every 30 seconds (Obsessive)</option>
+                                    <option>Every 2 minutes (Recommended)</option>
+                                    <option>Every 5 minutes (Lazy)</option>
+                                    <option>When I feel like it (Chaotic)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-bolt"></i> Enable Turbo Mode</div>
+                                <div class="setting-description">Makes everything 2.3% faster (placebo effect not included)</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-film"></i> Frame Rate Target</div>
+                                <div class="setting-description">Your monitor probably can't display this anyway</div>
+                            </div>
+                            <div class="setting-control">
+                                <select class="dropdown-control">
+                                    <option>30 FPS (Cinematic)</option>
+                                    <option>60 FPS (Standard)</option>
+                                    <option>120 FPS (Smooth)</option>
+                                    <option>240 FPS (Overkill)</option>
+                                    <option>∞ FPS (Impossible)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy Settings -->
+                <div class="settings-section" id="privacy">
+                    <h2 class="section-title"><i class="fas fa-shield-alt"></i> Privacy & Security</h2>
+                    
+                    <div class="setting-group">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-eye"></i> Track Everything I Do</div>
+                                <div class="setting-description">For your convenience, of course</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-share-alt"></i> Share Data with 847 Partners</div>
+                                <div class="setting-description">They all totally need your browsing habits</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-lock"></i> Password Complexity Requirements</div>
+                                <div class="setting-description">Choose your level of password-induced frustration</div>
+                            </div>
+                            <div class="setting-control">
+                                <select class="dropdown-control">
+                                    <option>Minimal (password123)</option>
+                                    <option>Standard (8+ chars, mixed case)</option>
+                                    <option>Strong (Special chars required)</option>
+                                    <option>Paranoid (16+ chars, hieroglyphs)</option>
+                                    <option>NSA Level (Good luck remembering)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-hourglass-half"></i> Auto-logout Timer</div>
+                                <div class="setting-description">How long before we assume you've been abducted</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="range" class="slider" min="1" max="1440" value="30" oninput="updateSetting('logout-timer', this.value)">
+                                <span id="logout-timer">30 min</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="settings-section" id="notifications">
+                    <h2 class="section-title"><i class="fas fa-bell"></i> Notifications & Alerts</h2>
+                    
+                    <div class="setting-group">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-lungs"></i> Notify Me When I Breathe</div>
+                                <div class="setting-description">Because breathing is important and we don't trust you</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-bullhorn"></i> Notification Persistence Level</div>
+                                <div class="setting-description">How aggressively should we interrupt your workflow?</div>
+                            </div>
+                            <div class="setting-control">
+                                <select class="dropdown-control">
+                                    <option>Polite (Shows once)</option>
+                                    <option>Persistent (Shows 3 times)</option>
+                                    <option>Annoying (Shows every 5 min)</option>
+                                    <option>Stalker Level (Never stops)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-cloud-sun"></i> Weather Updates</div>
+                                <div class="setting-description">Get notified about weather changes (looking outside is so 20th century)</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-cookie-bite"></i> Cookie Consumption Alerts</div>
+                                <div class="setting-description">Get warned when you exceed your daily cookie limit</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Settings -->
+                <div class="settings-section" id="advanced">
+                    <h2 class="section-title"><i class="fas fa-brain"></i> Advanced Options</h2>
+                    
+                    <div class="setting-group">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-code"></i> Enable Developer Mode</div>
+                                <div class="setting-description">Unlock 50 more unnecessary settings</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" onclick="toggleSetting(this, 'developer')"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-atom"></i> Quantum Processing Mode</div>
+                                <div class="setting-description">Process data in parallel universes (results may vary)</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-robot"></i> AI Assistance Level</div>
+                                <div class="setting-description tooltip" data-tooltip="Warning: Level 5 may achieve sentience">
+                                    Choose how much AI should think for you
+                                </div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="range" class="slider" min="0" max="5" value="2" oninput="updateSetting('ai-level', this.value)">
+                                <span id="ai-level">Level 2</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-magnet"></i> Reality Distortion Field</div>
+                                <div class="setting-description">Bend the laws of physics (Steve Jobs approved)</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="range" class="slider" min="0" max="100" value="0" oninput="updateSetting('reality-field', this.value)">
+                                <span id="reality-field">0% (Safe)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="danger-zone">
+                        <h4><i class="fas fa-radiation"></i> Danger Zone</h4>
+                        <p>These settings may cause existential dread and/or system instability</p>
+                        <div class="danger-buttons">
+                            <button class="danger-button" onclick="showModal('danger')">
+                                <i class="fas fa-crown"></i> Enable God Mode
+                            </button>
+                            <button class="danger-button" onclick="showModal('reset')">
+                                <i class="fas fa-sync-alt"></i> Reset Universe
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experimental Features -->
+                <div class="settings-section" id="experimental">
+                    <h2 class="section-title"><i class="fas fa-flask"></i> Experimental Features</h2>
+                    
+                    <div class="setting-group">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-clock"></i> Time Travel Mode</div>
+                                <div class="setting-description">Access features from the future (may cause paradoxes)</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" onclick="toggleSetting(this, 'timetravel')"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-mind-share"></i> Telepathic Interface</div>
+                                <div class="setting-description">Control the app with your thoughts (neural implant required)</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-hologram"></i> Holographic Display</div>
+                                <div class="setting-description">Project interface into 3D space</div>
+                            </div>
+                            <div class="setting-control">
+                                <select class="dropdown-control">
+                                    <option>Disabled (Boring 2D)</option>
+                                    <option>Basic Hologram</option>
+                                    <option>Star Wars Level</option>
+                                    <option>Tony Stark Mode</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-weight-hanging"></i> Gravity Simulation</div>
+                                <div class="setting-description">Make UI elements fall down like real objects</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="range" class="slider" min="0" max="9.8" step="0.1" value="0" oninput="updateSetting('gravity', this.value)">
+                                <span id="gravity">0 m/s²</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Absurd Settings -->
+                <div class="settings-section" id="absurd">
+                    <h2 class="section-title"><i class="fas fa-grin-squint-tears"></i> Completely Absurd</h2>
+                    
+                    <div class="setting-group absurd-setting">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-ruler-combined"></i> Pixel Perfectionism Level</div>
+                                <div class="setting-description">How many pixels off-center can you tolerate before having a breakdown?</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="range" class="slider" min="0" max="1" step="0.1" value="0.3" oninput="updateSetting('pixel-ocd', this.value)">
+                                <span id="pixel-ocd">0.3px</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-heart"></i> Enable Emotional Support for UI Elements</div>
+                                <div class="setting-description">Buttons need love too</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" onclick="toggleSetting(this, 'emotional')"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-clock"></i> Procrastination Helper</div>
+                                <div class="setting-description">Automatically delay all your actions by 5 minutes</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" onclick="toggleSetting(this)"></div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-language"></i> Language Complexity</div>
+                                <div class="setting-description">How unnecessarily verbose should the interface be?</div>
+                            </div>
+                            <div class="setting-control">
+                                <select class="dropdown-control">
+                                    <option>Simple (Save)</option>
+                                    <option>Verbose (Save Document)</option>
+                                    <option>Academic (Persist Data Structure)</option>
+                                    <option>Legal (Execute Document Preservation Protocol)</option>
+                                    <option>Shakespeare (Doth Preserve Thy Noble Manuscript)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-dice"></i> Random Chaos Generator</div>
+                                <div class="setting-description">Randomly change settings every few minutes for excitement</div>
+                            </div>
+                            <div class="setting-control">
+                                <input type="range" class="slider" min="0" max="100" value="0" oninput="updateSetting('chaos-level', this.value)">
+                                <span id="chaos-level">0% (Boring)</span>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title"><i class="fas fa-question"></i> Existential Dread Mode</div>
+                                <div class="setting-description">Occasionally question the meaning of your settings</div>
+                            </div>
+                            <div class="setting-control">
+                                <div class="toggle-switch" onclick="toggleSetting(this, 'existential')"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-panel">
+                <div class="status-header">
+                    <i class="fas fa-chart-line"></i> System Status
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="settings-changed">0</div>
+                        <div class="stat-label">Settings Changed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="time-wasted">0</div>
+                        <div class="stat-label">Minutes Wasted</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="productivity">100</div>
+                        <div class="stat-label">Productivity %</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="sanity-level">100</div>
+                        <div class="stat-label">Sanity Level</div>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span>Uselessness Level</span>
+                        <span id="uselessness-percent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="uselessness-progress"></div>
+                    </div>
+                </div>
+
+                <div class="activity-log">
+                    <h4><i class="fas fa-history"></i> Recent Activity</h4>
+                    <div id="log-entries">
+                        <div class="log-entry">
+                            <span class="log-time">00:00</span>
+                            <span class="log-action">🎉 Welcome to Settings Simulator Pro!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="easter-egg" id="easter-egg">
+                    <i class="fas fa-egg"></i> You found an easter egg!
+                    <div style="font-size: 1rem; margin-top: 0.5rem;">
+                        Achievement: Settings Explorer
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="dangerModal">
+        <div class="modal-content">
+            <h3><i class="fas fa-radiation"></i> Are you absolutely sure?</h3>
+            <p>Enabling God Mode will give you ultimate power over the universe, which historically hasn't ended well for anyone. Proceed with caution.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="enableGodMode()">I Accept the Consequences</button>
+                <button class="btn btn-secondary" onclick="closeModal()">Maybe Not Today</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="resetModal">
+        <div class="modal-content">
+            <h3><i class="fas fa-universal-access"></i> Reset Universe</h3>
+            <p>This will reset all settings to their default values and may cause a small tear in the fabric of space-time. Are you sure you want to continue?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="resetUniverse()">Reset Everything</button>
+                <button class="btn btn-secondary" onclick="closeModal()">Keep Current Reality</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App state management
+        let settingsData = {
+            changed: 0,
+            timeWasted: 0,
+            productivity: 100,
+            sanityLevel: 100,
+            uselessnessLevel: 0,
+            startTime: Date.now(),
+            developerMode: false,
+            chaosMode: false,
+            easterEggFound: false,
+            godMode: false
+        };
+
+        let logEntries = [];
+        let chaosInterval;
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            startTimeWasting();
+            setupCategoryNavigation();
+            addRandomQuotes();
+            setupThemeToggle();
+            
+            // Add initial log
+            addLogEntry("🚀 Settings Simulator Pro initialized");
+            addLogEntry("⚙️ Start configuring unnecessary settings!");
+        });
+
+        function setupThemeToggle() {
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const icon = themeToggle.querySelector('i');
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                    addLogEntry("🌙 Dark mode enabled");
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                    addLogEntry("☀️ Light mode enabled");
+                }
+            });
+        }
+
+        function setupCategoryNavigation() {
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // Update active category
+                    document.querySelectorAll('.category-item').forEach(cat => cat.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Show corresponding section
+                    const section = this.dataset.section;
+                    document.querySelectorAll('.settings-section').forEach(sec => sec.classList.remove('active'));
+                    document.getElementById(section).classList.add('active');
+
+                    addLogEntry(`📂 Opened ${this.textContent.trim()} section`);
+                    updateStats();
+                });
+            });
+        }
+
+        function toggleSetting(element, special = null) {
+            element.classList.toggle('active');
+            const isActive = element.classList.contains('active');
+            
+            settingsData.changed++;
+            
+            if (special === 'developer') {
+                if (isActive) {
+                    settingsData.developerMode = true;
+                    addLogEntry(`🤓 Developer mode activated`);
+                    showDeveloperFeatures();
+                } else {
+                    settingsData.developerMode = false;
+                    addLogEntry(`😴 Developer mode deactivated`);
+                }
+            } else if (special === 'timetravel') {
+                if (isActive) {
+                    addLogEntry(`⏰ Time travel enabled - Welcome to 2087!`);
+                    document.body.style.filter = 'hue-rotate(45deg)';
+                } else {
+                    addLogEntry(`⏰ Returned to present time`);
+                    document.body.style.filter = '';
+                }
+            } else if (special === 'emotional') {
+                if (isActive) {
+                    addLogEntry(`❤️ UI elements are now emotionally supported`);
+                    startEmotionalSupport();
+                }
+            } else if (special === 'existential') {
+                if (isActive) {
+                    addLogEntry(`🤔 Existential dread mode enabled`);
+                    setTimeout(() => {
+                        addLogEntry(`🤯 But what does it all mean?`);
+                    }, 3000);
+                }
+            }
+
+            updateStats();
+            checkForEasterEgg();
+        }
+
+        function updateSetting(type, value) {
+            settingsData.changed++;
+            
+            const displayElement = document.getElementById(type);
+            if (displayElement) {
+                switch(type) {
+                    case 'button-roundness':
+                        displayElement.textContent = value + 'px';
+                        break;
+                    case 'scrollbar-opacity':
+                        displayElement.textContent = value + '%';
+                        break;
+                    case 'cursor-blink':
+                        displayElement.textContent = value + 'ms';
+                        break;
+                    case 'ambience-volume':
+                        displayElement.textContent = value + '%';
+                        break;
+                    case 'cpu-limit':
+                        displayElement.textContent = value + '%';
+                        if (value < 20) {
+                            addLogEntry(`🐌 CPU limited to ${value}% - Everything is now slower`);
+                        }
+                        break;
+                    case 'logout-timer':
+                        displayElement.textContent = value + ' min';
+                        break;
+                    case 'ai-level':
+                        displayElement.textContent = 'Level ' + value;
+                        if (value >= 4) {
+                            addLogEntry(`🤖 AI Level ${value} - I'm starting to think for myself...`);
+                        }
+                        break;
+                    case 'reality-field':
+                        displayElement.textContent = value + '% ' + (value > 50 ? '(Dangerous)' : '(Safe)');
+                        if (value > 80) {
+                            addLogEntry(`⚡ Reality distortion at ${value}% - Physics may not apply`);
+                        }
+                        break;
+                    case 'gravity':
+                        displayElement.textContent = value + ' m/s²';
+                        if (value > 5) {
+                            addLogEntry(`🌍 High gravity mode - UI elements feeling heavy`);
+                        }
+                        break;
+                    case 'pixel-ocd':
+                        displayElement.textContent = value + 'px';
+                        if (value < 0.1) {
+                            addLogEntry(`🔍 Maximum pixel perfectionism achieved`);
+                        }
+                        break;
+                    case 'chaos-level':
+                        displayElement.textContent = value + '% ' + (value > 50 ? '(Chaotic)' : '(Boring)');
+                        if (value > 70 && !settingsData.chaosMode) {
+                            settingsData.chaosMode = true;
+                            addLogEntry(`🌪️ Chaos mode activated - Anything could happen!`);
+                            startChaosMode();
+                        } else if (value <= 70 && settingsData.chaosMode) {
+                            settingsData.chaosMode = false;
+                            clearInterval(chaosInterval);
+                            addLogEntry(`🌪️ Chaos mode deactivated`);
+                        }
+                        break;
+                }
+            }
+
+            updateStats();
+        }
+
+        function updateStats() {
+            settingsData.timeWasted = Math.floor((Date.now() - settingsData.startTime) / 60000);
+            settingsData.productivity = Math.max(0, 100 - settingsData.changed * 2);
+            settingsData.sanityLevel = Math.max(0, 100 - settingsData.changed * 3);
+            settingsData.uselessnessLevel = Math.min(100, settingsData.changed * 1.5);
+
+            document.getElementById('settings-changed').textContent = settingsData.changed;
+            document.getElementById('time-wasted').textContent = settingsData.timeWasted;
+            document.getElementById('productivity').textContent = settingsData.productivity;
+            document.getElementById('sanity-level').textContent = settingsData.sanityLevel;
+            document.getElementById('uselessness-percent').textContent = Math.round(settingsData.uselessnessLevel) + '%';
+            
+            const progressBar = document.getElementById('uselessness-progress');
+            progressBar.style.width = settingsData.uselessnessLevel + '%';
+
+            // Change progress bar color based on uselessness level
+            if (settingsData.uselessnessLevel > 75) {
+                progressBar.style.background = 'linear-gradient(90deg, #dc2626, #b91c1c)';
+            } else if (settingsData.uselessnessLevel > 50) {
+                progressBar.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
+            }
+        }
+
+        function addLogEntry(message) {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            logEntries.unshift({
+                time: timeStr,
+                message: message
+            });
+
+            // Keep only last 8 entries
+            if (logEntries.length > 8) {
+                logEntries = logEntries.slice(0, 8);
+            }
+
+            const logContainer = document.getElementById('log-entries');
+            logContainer.innerHTML = logEntries.map(entry => 
+                `<div class="log-entry">
+                    <span class="log-time">${entry.time}</span>
+                    <span class="log-action">${entry.message}</span>
+                </div>`
+            ).join('');
+        }
+
+        function startTimeWasting() {
+            setInterval(() => {
+                updateStats();
+                
+                if (settingsData.timeWasted > 0 && settingsData.timeWasted % 5 === 0) {
+                    const messages = [
+                        `⏰ You've been here for ${settingsData.timeWasted} minutes`,
+                        `🤔 Still haven't found the perfect settings?`,
+                        `💡 Maybe try changing something else?`,
+                        `🎯 Achievement unlocked: Professional Time Waster`,
+                        `😅 Your productivity is now at ${settingsData.productivity}%`,
+                        `⚙️ ${settingsData.changed} settings changed so far`,
+                        `🧠 Sanity level: ${settingsData.sanityLevel}%`
+                    ];
+                    addLogEntry(messages[Math.floor(Math.random() * messages.length)]);
+                }
+            }, 60000);
+        }
+
+        function checkForEasterEgg() {
+            if (!settingsData.easterEggFound && settingsData.changed >= 20) {
+                settingsData.easterEggFound = true;
+                document.getElementById('easter-egg').classList.add('found');
+                addLogEntry(`🥚 Easter egg discovered! You're dedicated to meaningless configuration!`);
+            }
+        }
+
+        function showDeveloperFeatures() {
+            // Add some fake developer options
+            setTimeout(() => {
+                addLogEntry(`🔧 Unlocked: Memory leak simulator`);
+                addLogEntry(`🔧 Unlocked: CPU fan speed controller`);
+                addLogEntry(`🔧 Unlocked: Quantum entanglement debugger`);
+            }, 1000);
+        }
+
+        function startEmotionalSupport() {
+            const buttons = document.querySelectorAll('.btn, .toggle-switch, .dropdown-control, .category-item');
+            buttons.forEach(btn => {
+                btn.addEventListener('mouseenter', () => {
+                    if (Math.random() < 0.15) {
+                        const messages = [
+                            "❤️ Button says: 'Thanks for hovering over me!'",
+                            "😊 UI element feels appreciated!",
+                            "💖 You're such a great user!",
+                            "🌟 This setting feels special because of you!",
+                            "🤗 Thanks for the emotional support!"
+                        ];
+                        addLogEntry(messages[Math.floor(Math.random() * messages.length)]);
+                    }
+                });
+            });
+        }
+
+        function startChaosMode() {
+            if (!settingsData.chaosMode) return;
+            
+            clearInterval(chaosInterval);
+            
+            chaosInterval = setInterval(() => {
+                if (settingsData.chaosMode) {
+                    const toggles = document.querySelectorAll('.toggle-switch:not(.active)');
+                    if (toggles.length > 0) {
+                        const randomToggle = toggles[Math.floor(Math.random() * toggles.length)];
+                        toggleSetting(randomToggle);
+                        addLogEntry(`🌪️ Chaos changed a random setting!`);
+                    }
+                }
+            }, Math.random() * 10000 + 5000); // Random interval 5-15 seconds
+        }
+
+        function showModal(type) {
+            const modal = document.getElementById(type + 'Modal');
+            modal.style.display = 'block';
+            addLogEntry(`⚠️ Opened dangerous ${type} dialog`);
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        function enableGodMode() {
+            closeModal();
+            settingsData.godMode = true;
+            addLogEntry(`👑 GOD MODE ACTIVATED - You now control everything!`);
+            document.body.style.background = 'linear-gradient(45deg, gold, orange)';
+            
+            setTimeout(() => {
+                addLogEntry(`😅 Just kidding, you still can't control anything`);
+                document.body.style.background = '';
+                settingsData.godMode = false;
+            }, 5000);
+        }
+
+        function resetUniverse() {
+            closeModal();
+            addLogEntry(`💥 UNIVERSE RESET INITIATED...`);
+            
+            // Dramatic reset animation
+            document.body.style.animation = 'spin 2s ease-in-out';
+            
+            setTimeout(() => {
+                // Reset all settings
+                settingsData = {
+                    changed: 0,
+                    timeWasted: 0,
+                    productivity: 100,
+                    sanityLevel: 100,
+                    uselessnessLevel: 0,
+                    startTime: Date.now(),
+                    developerMode: false,
+                    chaosMode: false,
+                    easterEggFound: false,
+                    godMode: false
+                };
+                
+                // Reset toggles
+                document.querySelectorAll('.toggle-switch').forEach(toggle => {
+                    toggle.classList.remove('active');
+                });
+                
+                // Reset sliders
+                document.querySelectorAll('.slider').forEach(slider => {
+                    slider.value = slider.defaultValue || slider.min;
+                });
+                
+                logEntries = [];
+                addLogEntry(`🌌 Universe successfully reset`);
+                addLogEntry(`✨ All settings restored to cosmic defaults`);
+                
+                updateStats();
+                document.body.style.animation = '';
+                
+                // Hide easter egg
+                document.getElementById('easter-egg').classList.remove('found');
+            }, 2000);
+        }
+
+        function addRandomQuotes() {
+            const quotes = [
+                "The more settings you have, the more ways you can procrastinate",
+                "Perfection is achieved not when there's nothing to add, but when there's nothing left to configure",
+                "With great settings power comes great responsibility to waste time",
+                "I think, therefore I configure",
+                "To setting or not to setting, that is the question",
+                "All your settings are belong to us",
+                "The journey of a thousand miles begins with one unnecessary setting",
+                "Settings: because default is never good enough",
+                "You can't buy happiness, but you can configure it"
+            ];
+            
+            setInterval(() => {
+                if (Math.random() < 0.3) {
+                    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+                    addLogEntry(`💭 "${quote}"`);
+                }
+            }, 30000);
+        }
+
+        // Click events for modal backgrounds
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+            
+            // Secret konami code easter egg
+            window.konamiCode = window.konamiCode || [];
+            window.konamiCode.push(e.key);
+            if (window.konamiCode.length > 10) {
+                window.konamiCode.shift();
+            }
+            
+            const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+            if (window.konamiCode.join(',') === konami.join(',')) {
+                addLogEntry(`🎮 KONAMI CODE ACTIVATED! +30 Lives, +∞ Settings`);
+                document.body.style.background = 'linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #dda0dd)';
+                document.body.style.backgroundSize = '400% 400%';
+                document.body.style.animation = 'rainbow 3s ease infinite';
+                
+                // Add rainbow animation
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes rainbow {
+                        0% { background-position: 0% 50%; }
+                        50% { background-position: 100% 50%; }
+                        100% { background-position: 0% 50%; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        });
+    </script>
+</body>
+</html>
