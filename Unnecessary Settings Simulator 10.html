@@ -1,0 +1,2238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unnecessary Settings Simulator</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --tertiary-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --quaternary-gradient: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-bg-hover: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --glass-border-hover: rgba(255, 255, 255, 0.25);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.25);
+            --shadow-xl: 0 35px 60px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 15px 30px rgba(0, 0, 0, 0.2);
+            --shadow-sm: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --blur-sm: blur(8px);
+            --blur-md: blur(16px);
+            --blur-lg: blur(24px);
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 20px;
+            --border-radius-xl: 24px;
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.6;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 15% 25%, rgba(120, 119, 198, 0.4) 0%, transparent 45%),
+                radial-gradient(circle at 85% 75%, rgba(255, 118, 117, 0.4) 0%, transparent 45%),
+                radial-gradient(circle at 45% 85%, rgba(79, 172, 254, 0.4) 0%, transparent 45%),
+                radial-gradient(circle at 75% 15%, rgba(250, 112, 154, 0.3) 0%, transparent 45%),
+                linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.02) 50%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+            animation: backgroundShift 30s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { 
+                background: 
+                    radial-gradient(circle at 15% 25%, rgba(120, 119, 198, 0.4) 0%, transparent 45%),
+                    radial-gradient(circle at 85% 75%, rgba(255, 118, 117, 0.4) 0%, transparent 45%),
+                    radial-gradient(circle at 45% 85%, rgba(79, 172, 254, 0.4) 0%, transparent 45%);
+            }
+            50% { 
+                background: 
+                    radial-gradient(circle at 85% 25%, rgba(255, 118, 117, 0.4) 0%, transparent 45%),
+                    radial-gradient(circle at 15% 75%, rgba(79, 172, 254, 0.4) 0%, transparent 45%),
+                    radial-gradient(circle at 45% 15%, rgba(120, 119, 198, 0.4) 0%, transparent 45%);
+            }
+        }
+
+        .floating-orbs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: var(--blur-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: float 25s infinite linear;
+            box-shadow: 
+                0 8px 32px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .orb:nth-child(1) {
+            width: 120px;
+            height: 120px;
+            top: 10%;
+            left: 8%;
+            animation-delay: 0s;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.1));
+        }
+
+        .orb:nth-child(2) {
+            width: 80px;
+            height: 80px;
+            top: 45%;
+            right: 15%;
+            animation-delay: -8s;
+            background: linear-gradient(45deg, rgba(240, 147, 251, 0.15), rgba(245, 87, 108, 0.1));
+        }
+
+        .orb:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 15%;
+            left: 25%;
+            animation-delay: -16s;
+            background: linear-gradient(45deg, rgba(79, 172, 254, 0.15), rgba(0, 242, 254, 0.1));
+        }
+
+        .orb:nth-child(4) {
+            width: 60px;
+            height: 60px;
+            top: 25%;
+            left: 60%;
+            animation-delay: -12s;
+            background: linear-gradient(45deg, rgba(250, 112, 154, 0.15), rgba(254, 225, 64, 0.1));
+        }
+
+        .orb:nth-child(5) {
+            width: 90px;
+            height: 90px;
+            bottom: 35%;
+            right: 30%;
+            animation-delay: -20s;
+            background: linear-gradient(45deg, rgba(168, 237, 234, 0.15), rgba(254, 214, 227, 0.1));
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px) rotate(0deg) scale(1); 
+                opacity: 0.6;
+            }
+            25% { 
+                transform: translateY(-40px) translateX(20px) rotate(90deg) scale(1.1); 
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translateY(-20px) translateX(-15px) rotate(180deg) scale(0.9); 
+                opacity: 0.4;
+            }
+            75% { 
+                transform: translateY(25px) translateX(30px) rotate(270deg) scale(1.05); 
+                opacity: 0.7;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: slideInDown 1s ease-out;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            border-radius: 50%;
+        }
+
+        .header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(45deg, #ffffff, #f0f9ff, #ddd6fe, #fce7f3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            letter-spacing: -0.02em;
+            position: relative;
+        }
+
+        .header h1::after {
+            content: '™';
+            position: absolute;
+            top: 0;
+            font-size: 0.4em;
+            opacity: 0.7;
+            animation: pulse 2s infinite;
+        }
+
+        .header p {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .header .subtitle {
+            display: inline-block;
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-sm);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-xl);
+            padding: 0.8rem 2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: all var(--transition-normal);
+        }
+
+        .header .subtitle:hover {
+            background: var(--card-bg-hover);
+            border-color: var(--glass-border-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+            padding: 0 1rem;
+        }
+
+        .setting-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-lg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-xl);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .setting-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-gradient);
+            transform: scaleX(0);
+            transition: transform var(--transition-normal);
+            border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+        }
+
+        .setting-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+            pointer-events: none;
+        }
+
+        .setting-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: var(--shadow-xl);
+            background: var(--card-bg-hover);
+            border-color: var(--glass-border-hover);
+        }
+
+        .setting-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .setting-card:hover::after {
+            opacity: 1;
+        }
+
+        .setting-card:active {
+            transform: translateY(-8px) scale(1.01);
+            transition: transform var(--transition-fast);
+        }
+
+        .setting-card.premium {
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 
+                var(--shadow-lg),
+                0 0 30px rgba(255, 215, 0, 0.2);
+        }
+
+        .setting-card.premium::before {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+        }
+
+        .setting-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            gap: 1.5rem;
+        }
+
+        .setting-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--border-radius-md);
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .setting-icon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--border-radius-md);
+            padding: 2px;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), transparent, rgba(255, 255, 255, 0.1));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: exclude;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+        }
+
+        .setting-card:hover .setting-icon {
+            transform: scale(1.1) rotate(8deg);
+            box-shadow: 
+                var(--shadow-md),
+                0 0 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .setting-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .setting-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.01em;
+        }
+
+        .setting-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .setting-badge {
+            display: inline-block;
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            padding: 0.3rem 0.8rem;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.5rem;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .slider-container {
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .slider-wrapper {
+            position: relative;
+            padding: 1rem 0;
+        }
+
+        .slider {
+            width: 100%;
+            height: 10px;
+            border-radius: var(--border-radius-sm);
+            background: rgba(255, 255, 255, 0.15);
+            outline: none;
+            -webkit-appearance: none;
+            position: relative;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slider:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .slider::-webkit-slider-track {
+            height: 10px;
+            border-radius: var(--border-radius-sm);
+            background: transparent;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            cursor: pointer;
+            box-shadow: 
+                0 6px 20px rgba(79, 172, 254, 0.4),
+                0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all var(--transition-normal);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
+            box-shadow: 
+                0 8px 25px rgba(79, 172, 254, 0.6),
+                0 0 0 8px rgba(79, 172, 254, 0.1);
+        }
+
+        .slider::-webkit-slider-thumb:active {
+            transform: scale(1.1);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            cursor: pointer;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 6px 20px rgba(79, 172, 254, 0.4),
+                0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-value {
+            position: absolute;
+            top: -45px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 0.5rem 0.8rem;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: all var(--transition-normal);
+            pointer-events: none;
+            white-space: nowrap;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slider-value::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .slider:hover + .slider-value,
+        .slider:focus + .slider-value {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        .slider-track-fill {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 10px;
+            background: var(--accent-gradient);
+            border-radius: var(--border-radius-sm);
+            transform: translateY(-50%);
+            transition: width var(--transition-normal);
+            opacity: 0.8;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .slider-value {
+            position: absolute;
+            top: -35px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .slider:hover + .slider-value,
+        .slider:focus + .slider-value {
+            opacity: 1;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all var(--transition-normal);
+        }
+
+        .toggle-container:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .toggle {
+            position: relative;
+            width: 72px;
+            height: 36px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+
+        .toggle:hover {
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .toggle.active {
+            background: var(--success-color);
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 
+                0 0 20px rgba(16, 185, 129, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .toggle::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            transition: all var(--transition-normal);
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.15),
+                0 1px 2px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .toggle.active::before {
+            transform: translateX(36px);
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.2),
+                0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 8px;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transition: all var(--transition-normal);
+            opacity: 0;
+        }
+
+        .toggle.active::after {
+            left: 54px;
+            background: rgba(255, 255, 255, 0.8);
+            opacity: 1;
+        }
+
+        .toggle-label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            user-select: none;
+            cursor: pointer;
+        }
+
+        .toggle-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+
+        .status-indicator {
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius-md);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 1.5rem;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: var(--blur-sm);
+        }
+
+        .status-indicator::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .status-indicator:hover::before {
+            left: 100%;
+        }
+
+        .status-normal {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .status-normal::after {
+            content: '✓';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1em;
+            opacity: 0.7;
+        }
+
+        .status-warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+        }
+
+        .status-warning::after {
+            content: '⚠';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1em;
+            opacity: 0.7;
+        }
+
+        .status-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+
+        .status-danger::after {
+            content: '!';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+            font-weight: bold;
+            opacity: 0.7;
+        }
+
+        .status-info {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .status-info::after {
+            content: 'ℹ';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1em;
+            opacity: 0.7;
+        }
+
+        .control-panel {
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-lg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-xl);
+            padding: 3rem;
+            box-shadow: var(--shadow-xl);
+            text-align: center;
+            animation: slideInUp 1s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .control-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(79, 172, 254, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+
+        .control-panel h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            background: var(--secondary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .control-panel .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: var(--blur-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 160px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(79, 172, 254, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-4px) scale(1.05);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--glass-border-hover);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            color: white;
+            box-shadow: 0 6px 20px rgba(255, 75, 43, 0.4);
+            border: 1px solid rgba(255, 75, 43, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(255, 75, 43, 0.6);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%);
+            color: white;
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(255, 152, 0, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(-2px) scale(1.02);
+            transition: transform var(--transition-fast);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .progress-section {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .progress-percentage {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-gradient);
+            border-radius: var(--border-radius-sm);
+            transition: width var(--transition-slow);
+            position: relative;
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.5);
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .progress-fill::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-description {
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .notification-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            backdrop-filter: var(--blur-lg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow-xl);
+            transform: translateX(400px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            max-width: 400px;
+            min-width: 300px;
+        }
+
+        .notification-toast.show {
+            transform: translateX(0);
+        }
+
+        .notification-toast::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+        }
+
+        .toast-content {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        .toast-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.25rem;
+            border-radius: 50%;
+            transition: all var(--transition-normal);
+        }
+
+        .toast-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .easter-egg {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--secondary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-normal);
+            z-index: 100;
+            font-size: 1.8rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .easter-egg::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), transparent, rgba(255, 255, 255, 0.1));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: exclude;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+        }
+
+        .easter-egg:hover {
+            transform: scale(1.15) rotate(15deg);
+            box-shadow: 
+                var(--shadow-xl),
+                0 0 30px rgba(240, 147, 251, 0.5);
+        }
+
+        .easter-egg:active {
+            transform: scale(1.05) rotate(8deg);
+        }
+
+        /* Floating action buttons for additional controls */
+        .floating-controls {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 99;
+        }
+
+        .floating-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: var(--blur-md);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: var(--shadow-md);
+        }
+
+        @keyframes slideInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-80px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes slideInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(80px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.7; 
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% {
+                transform: translate3d(0,0,0);
+            }
+            40%, 43% {
+                transform: translate3d(0, -15px, 0);
+            }
+            70% {
+                transform: translate3d(0, -7px, 0);
+            }
+            90% {
+                transform: translate3d(0, -3px, 0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(79, 172, 254, 0.6);
+            }
+        }
+
+        .pulsing {
+            animation: pulse 2s infinite;
+        }
+
+        .bouncing {
+            animation: bounce 1s ease-in-out;
+        }
+
+        .glowing {
+            animation: glow 2s infinite;
+        }
+
+        /* Define the keyframes for the 'glow' animation */
+        @keyframes glow {
+            0% {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .pulsing {
+            animation: pulse 2s infinite;
+        }
+
+        @media (max-width: 1200px) {
+            .settings-grid {
+                grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: clamp(2rem, 8vw, 3rem);
+            }
+            
+            .header p {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+            
+            .settings-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 0;
+            }
+            
+            .setting-card {
+                padding: 2rem;
+                margin: 0 0.5rem;
+            }
+            
+            .control-panel {
+                padding: 2rem;
+                margin: 0 0.5rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .notification-toast {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+                min-width: auto;
+                transform: translateY(-100px);
+            }
+            
+            .notification-toast.show {
+                transform: translateY(0);
+            }
+            
+            .floating-controls {
+                bottom: 80px;
+                right: 10px;
+            }
+            
+            .easter-egg {
+                bottom: 10px;
+                right: 10px;
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .setting-card {
+                padding: 1.5rem;
+            }
+            
+            .setting-header {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+                gap: 1rem;
+            }
+            
+            .setting-icon {
+                align-self: center;
+            }
+            
+            .control-panel {
+                padding: 1.5rem;
+            }
+            
+            .control-panel h3 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Dark mode enhancements */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --card-bg: rgba(255, 255, 255, 0.06);
+                --card-bg-hover: rgba(255, 255, 255, 0.1);
+                --glass-border: rgba(255, 255, 255, 0.15);
+                --glass-border-hover: rgba(255, 255, 255, 0.22);
+            }
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            .setting-card {
+                border: 2px solid rgba(255, 255, 255, 0.3);
+            }
+            
+            .btn {
+                border: 2px solid rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .orb {
+                animation: none;
+            }
+            
+            .progress-fill::after {
+                animation: none;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .floating-orbs,
+            .easter-egg,
+            .floating-controls,
+            .notification-toast {
+                display: none;
+            }
+            
+            .setting-card {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            
+            .control-panel {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-orbs">
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1>Unnecessary Settings</h1>
+            <p>Fine-tune your reality with precision controls you never knew you needed. Professional-grade placebo effects guaranteed.</p>
+            <div class="subtitle">
+                🎭 Version 2.0 - Now with 47% more unnecessary complexity
+            </div>
+        </header>
+
+        <div class="settings-grid" id="settingsGrid">
+            <!-- Settings will be dynamically generated -->
+        </div>
+
+        <div class="control-panel">
+            <h3>Master Control Panel</h3>
+            <p class="subtitle">Command your digital destiny with these powerful tools</p>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="randomizeAll()">🎲 Randomize All</button>
+                <button class="btn btn-secondary" onclick="resetToDefaults()">🔄 Reset Defaults</button>
+                <button class="btn btn-danger" onclick="enableChaosMode()">⚡ Chaos Mode</button>
+            </div>
+            <div class="progress-section">
+                <div class="progress-label">
+                    <span class="progress-title">System Optimization</span>
+                    <span class="progress-percentage" id="optimizationPercent">73%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="systemOptimization" style="width: 73%"></div>
+                </div>
+                <div class="progress-description">
+                    Your settings are performing at optimal placebo efficiency
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-controls">
+        <div class="floating-btn" onclick="toggleTheme()" title="Toggle Theme">
+            🌙
+        </div>
+        <div class="floating-btn" onclick="showHelp()" title="Help">
+            ❓
+        </div>
+    </div>
+
+    <div class="notification-toast" id="notificationToast">
+        <button class="toast-close" onclick="hideNotification()">×</button>
+        <div class="toast-content" id="toastContent"></div>
+    </div>
+
+    <div class="easter-egg" onclick="triggerEasterEgg()">
+        🎭
+    </div>
+
+    <script>
+        const settings = [
+            {
+                id: 'confidence',
+                title: 'Confidence Booster',
+                description: 'Adjusts your perceived competence in situations where you have no actual expertise.',
+                icon: '💪',
+                type: 'slider',
+                value: 75,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 30) return { class: 'status-danger', text: 'Imposter Syndrome Active' };
+                    if (val > 85) return { class: 'status-warning', text: 'Dangerously Overconfident' };
+                    return { class: 'status-normal', text: 'Optimal Delusion Level' };
+                }
+            },
+            {
+                id: 'reality',
+                title: 'Reality Distortion Field',
+                description: 'Controls how much of actual reality penetrates your bubble of comfortable assumptions.',
+                icon: '🌍',
+                type: 'slider',
+                value: 42,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 20) return { class: 'status-danger', text: 'Living in Fantasy' };
+                    if (val > 80) return { class: 'status-warning', text: 'Uncomfortably Aware' };
+                    return { class: 'status-normal', text: 'Blissfully Ignorant' };
+                }
+            },
+            {
+                id: 'productivity',
+                title: 'Productivity Theater',
+                description: 'Makes you feel busy and important while accomplishing roughly the same amount.',
+                icon: '📈',
+                type: 'slider',
+                value: 88,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 40) return { class: 'status-danger', text: 'Actually Relaxed' };
+                    if (val > 90) return { class: 'status-warning', text: 'Burnout Imminent' };
+                    return { class: 'status-normal', text: 'Optimally Stressed' };
+                }
+            },
+            {
+                id: 'expertise',
+                title: 'Instant Expertise Mode',
+                description: 'Enables confident opinions on topics you learned about 5 minutes ago.',
+                icon: '🎓',
+                type: 'toggle',
+                value: true,
+                getStatus: (val) => {
+                    return val 
+                        ? { class: 'status-warning', text: 'Dunning-Kruger Effect Active' }
+                        : { class: 'status-normal', text: 'Humbly Ignorant' };
+                }
+            },
+            {
+                id: 'luck',
+                title: 'Luck Amplifier',
+                description: 'Increases the probability of finding parking spots and avoiding awkward conversations.',
+                icon: '🍀',
+                type: 'slider',
+                value: 60,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 25) return { class: 'status-danger', text: 'Murphy\'s Law Active' };
+                    if (val > 85) return { class: 'status-warning', text: 'Suspiciously Lucky' };
+                    return { class: 'status-normal', text: 'Statistically Average' };
+                }
+            },
+            {
+                id: 'nostalgia',
+                title: 'Nostalgia Filter',
+                description: 'Automatically removes negative memories and enhances the "good old days" effect.',
+                icon: '📸',
+                type: 'slider',
+                value: 70,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 30) return { class: 'status-danger', text: 'Painfully Accurate Memory' };
+                    if (val > 85) return { class: 'status-warning', text: 'Rose-Colored Overload' };
+                    return { class: 'status-normal', text: 'Selective Amnesia Engaged' };
+                }
+            },
+            {
+                id: 'urgency',
+                title: 'Artificial Urgency Generator',
+                description: 'Creates the feeling that everything is extremely time-sensitive and crucial.',
+                icon: '⏰',
+                type: 'slider',
+                value: 85,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 40) return { class: 'status-normal', text: 'Zen-like Calm' };
+                    if (val > 90) return { class: 'status-danger', text: 'Panic Mode Engaged' };
+                    return { class: 'status-warning', text: 'Constructive Anxiety' };
+                }
+            },
+            {
+                id: 'social',
+                title: 'Social Battery Optimizer',
+                description: 'Manages your tolerance for human interaction and small talk endurance.',
+                icon: '🔋',
+                type: 'slider',
+                value: 35,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 20) return { class: 'status-danger', text: 'Hermit Mode Active' };
+                    if (val > 80) return { class: 'status-warning', text: 'Dangerously Extroverted' };
+                    return { class: 'status-normal', text: 'Socially Functional' };
+                }
+            },
+            {
+                id: 'perfectionism',
+                title: 'Perfectionism Paralysis',
+                description: 'Controls how much you obsess over minor details while ignoring major issues.',
+                icon: '✨',
+                type: 'toggle',
+                value: false,
+                getStatus: (val) => {
+                    return val 
+                        ? { class: 'status-warning', text: 'Nothing Ever Gets Done' }
+                        : { class: 'status-normal', text: 'Good Enough Philosophy' };
+                }
+            },
+            {
+                id: 'focus',
+                title: 'Attention Span Multiplier',
+                description: 'Extends your ability to concentrate on important tasks by up to 3.7 seconds.',
+                icon: '🎯',
+                type: 'slider',
+                value: 25,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 30) return { class: 'status-danger', text: 'Goldfish-Level Focus' };
+                    if (val > 70) return { class: 'status-warning', text: 'Unnaturally Focused' };
+                    return { class: 'status-normal', text: 'ADHD Standard' };
+                }
+            },
+            {
+                id: 'wisdom',
+                title: 'Retrospective Wisdom Engine',
+                description: 'Generates profound insights about decisions 3-5 years after it would have been useful.',
+                icon: '🦉',
+                type: 'slider',
+                value: 90,
+                min: 0,
+                max: 100,
+                unit: '%',
+                getStatus: (val) => {
+                    if (val < 40) return { class: 'status-normal', text: 'Blissfully Unaware' };
+                    if (val > 85) return { class: 'status-danger', text: 'Chronically Regretful' };
+                    return { class: 'status-warning', text: 'Moderately Haunted' };
+                }
+            },
+            {
+                id: 'motivation',
+                title: 'Motivation Randomizer',
+                description: 'Provides bursts of intense motivation at completely inconvenient times.',
+                icon: '🚀',
+                type: 'toggle',
+                value: true,
+                getStatus: (val) => {
+                    return val 
+                        ? { class: 'status-warning', text: '3 AM Productivity Spikes' }
+                        : { class: 'status-normal', text: 'Consistently Unmotivated' };
+                }
+            }
+        ];
+
+        let chaosMode = false;
+        let easterEggCount = 0;
+
+        function createSettingCard(setting) {
+            const card = document.createElement('div');
+            card.className = 'setting-card';
+            card.setAttribute('data-setting', setting.id);
+
+            // Add premium class for special settings
+            if (['expertise', 'motivation', 'wisdom'].includes(setting.id)) {
+                card.classList.add('premium');
+            }
+
+            const currentStatus = setting.getStatus(setting.value);
+
+            if (setting.type === 'slider') {
+                card.innerHTML = `
+                    <div class="setting-header">
+                        <div class="setting-icon">${setting.icon}</div>
+                        <div class="setting-info">
+                            <div class="setting-title">${setting.title}</div>
+                            <div class="setting-description">${setting.description}</div>
+                            ${setting.premium ? '<div class="setting-badge">Premium Feature</div>' : ''}
+                        </div>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Level</span>
+                            <span id="current-${setting.id}">${setting.value}${setting.unit}</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" class="slider" min="${setting.min}" max="${setting.max}" 
+                                   value="${setting.value}" id="slider-${setting.id}"
+                                   oninput="updateSetting('${setting.id}', this.value)">
+                            <div class="slider-value" id="value-${setting.id}">${setting.value}${setting.unit}</div>
+                            <div class="slider-track-fill" id="track-${setting.id}" 
+                                 style="width: ${(setting.value - setting.min) / (setting.max - setting.min) * 100}%"></div>
+                        </div>
+                    </div>
+                    <div class="status-indicator ${currentStatus.class}" id="status-${setting.id}">
+                        ${currentStatus.text}
+                    </div>
+                `;
+            } else if (setting.type === 'toggle') {
+                card.innerHTML = `
+                    <div class="setting-header">
+                        <div class="setting-icon">${setting.icon}</div>
+                        <div class="setting-info">
+                            <div class="setting-title">${setting.title}</div>
+                            <div class="setting-description">${setting.description}</div>
+                            ${setting.premium ? '<div class="setting-badge">Premium Feature</div>' : ''}
+                        </div>
+                    </div>
+                    <div class="toggle-container">
+                        <div class="toggle ${setting.value ? 'active' : ''}" id="toggle-${setting.id}"
+                             onclick="toggleSetting('${setting.id}')"></div>
+                        <div>
+                            <div class="toggle-label" id="toggle-label-${setting.id}">
+                                ${setting.value ? 'Enabled' : 'Disabled'}
+                            </div>
+                            <div class="toggle-description">
+                                ${setting.value ? 'Feature is currently active' : 'Feature is currently inactive'}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="status-indicator ${currentStatus.class}" id="status-${setting.id}">
+                        ${currentStatus.text}
+                    </div>
+                `;
+            }
+
+            // Add hover effects and animations
+            card.addEventListener('mouseenter', () => {
+                card.style.animationDelay = '0s';
+                card.classList.add('bouncing');
+            });
+
+            card.addEventListener('animationend', () => {
+                card.classList.remove('bouncing');
+            });
+
+            return card;
+        }
+
+        function updateSetting(settingId, value) {
+            const setting = settings.find(s => s.id === settingId);
+            if (!setting) return;
+
+            setting.value = parseFloat(value);
+            const status = setting.getStatus(setting.value);
+            
+            // Update value display
+            const valueElement = document.getElementById(`value-${settingId}`);
+            const currentElement = document.getElementById(`current-${settingId}`);
+            const trackElement = document.getElementById(`track-${settingId}`);
+            
+            if (valueElement) {
+                valueElement.textContent = `${value}${setting.unit}`;
+                valueElement.style.left = `${(value - setting.min) / (setting.max - setting.min) * 100}%`;
+            }
+            
+            if (currentElement) {
+                currentElement.textContent = `${value}${setting.unit}`;
+            }
+            
+            if (trackElement) {
+                trackElement.style.width = `${(value - setting.min) / (setting.max - setting.min) * 100}%`;
+            }
+            
+            // Update status with animation
+            const statusElement = document.getElementById(`status-${settingId}`);
+            if (statusElement) {
+                statusElement.style.opacity = '0';
+                setTimeout(() => {
+                    statusElement.className = `status-indicator ${status.class}`;
+                    statusElement.textContent = status.text;
+                    statusElement.style.opacity = '1';
+                }, 150);
+            }
+
+            updateOptimization();
+            
+            // Add visual feedback
+            const card = document.querySelector(`[data-setting="${settingId}"]`);
+            if (card) {
+                card.classList.add('glowing');
+                setTimeout(() => card.classList.remove('glowing'), 1000);
+            }
+            
+            if (Math.random() < 0.3) {
+                showNotification(getRandomNotification(settingId, value));
+            }
+        }
+
+        function toggleSetting(settingId) {
+            const setting = settings.find(s => s.id === settingId);
+            if (!setting) return;
+
+            setting.value = !setting.value;
+            const status = setting.getStatus(setting.value);
+            
+            // Update toggle appearance with enhanced animation
+            const toggleElement = document.getElementById(`toggle-${settingId}`);
+            const labelElement = document.getElementById(`toggle-label-${settingId}`);
+            
+            if (toggleElement) {
+                toggleElement.classList.toggle('active', setting.value);
+                
+                // Add bounce effect
+                toggleElement.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    toggleElement.style.transform = 'scale(1)';
+                }, 100);
+            }
+            
+            if (labelElement) {
+                labelElement.textContent = setting.value ? 'Enabled' : 'Disabled';
+                
+                // Update description
+                const container = toggleElement.parentElement;
+                const description = container.querySelector('.toggle-description');
+                if (description) {
+                    description.textContent = setting.value ? 'Feature is currently active' : 'Feature is currently inactive';
+                }
+            }
+            
+            // Update status with animation
+            const statusElement = document.getElementById(`status-${settingId}`);
+            if (statusElement) {
+                statusElement.style.opacity = '0';
+                setTimeout(() => {
+                    statusElement.className = `status-indicator ${status.class}`;
+                    statusElement.textContent = status.text;
+                    statusElement.style.opacity = '1';
+                }, 150);
+            }
+
+            updateOptimization();
+            
+            // Add visual feedback
+            const card = document.querySelector(`[data-setting="${settingId}"]`);
+            if (card) {
+                card.classList.add('glowing');
+                setTimeout(() => card.classList.remove('glowing'), 1000);
+            }
+            
+            if (Math.random() < 0.4) {
+                showNotification(getRandomNotification(settingId, setting.value));
+            }
+        }
+
+        function updateOptimization() {
+            const totalSettings = settings.length;
+            let optimizationScore = 0;
+            
+            settings.forEach(setting => {
+                if (setting.type === 'slider') {
+                    // Optimal ranges vary per setting
+                    const optimal = getOptimalRange(setting.id);
+                    const distance = Math.abs(setting.value - optimal.target);
+                    const maxDistance = Math.max(optimal.target - optimal.min, optimal.max - optimal.target);
+                    optimizationScore += Math.max(0, 100 - (distance / maxDistance * 100));
+                } else {
+                    // Toggle settings have binary optimization
+                    optimizationScore += getOptimalToggle(setting.id) === setting.value ? 100 : 30;
+                }
+            });
+            
+            const percentage = Math.round(optimizationScore / totalSettings);
+            const progressBar = document.getElementById('systemOptimization');
+            const percentageText = document.getElementById('optimizationPercent');
+            
+            if (progressBar) {
+                progressBar.style.width = `${percentage}%`;
+                
+                // Add pulsing effect for extreme values
+                if (percentage < 20 || percentage > 95) {
+                    progressBar.classList.add('pulsing');
+                } else {
+                    progressBar.classList.remove('pulsing');
+                }
+            }
+            
+            if (percentageText) {
+                percentageText.textContent = `${percentage}%`;
+            }
+        }
+
+        function getOptimalRange(settingId) {
+            const ranges = {
+                confidence: { min: 0, target: 75, max: 100 },
+                reality: { min: 0, target: 45, max: 100 },
+                productivity: { min: 0, target: 70, max: 100 },
+                luck: { min: 0, target: 60, max: 100 },
+                nostalgia: { min: 0, target: 65, max: 100 },
+                urgency: { min: 0, target: 60, max: 100 },
+                social: { min: 0, target: 50, max: 100 },
+                focus: { min: 0, target: 55, max: 100 },
+                wisdom: { min: 0, target: 40, max: 100 }
+            };
+            return ranges[settingId] || { min: 0, target: 50, max: 100 };
+        }
+
+        function getOptimalToggle(settingId) {
+            const optimal = {
+                expertise: false,
+                perfectionism: false,
+                motivation: true
+            };
+            return optimal[settingId] !== undefined ? optimal[settingId] : true;
+        }
+
+        function getRandomNotification(settingId, value) {
+            const notifications = {
+                confidence: [
+                    "🎭 Confidence levels adjusted. You now feel qualified to give TED talks on subjects you googled yesterday.",
+                    "💪 Warning: Excessive confidence may lead to volunteering for impossible deadlines.",
+                    "🎪 Reality check disabled. Proceed with caution (or don't, you're probably fine)."
+                ],
+                reality: [
+                    "🌍 Reality distortion field updated. Your problems are now 23% more imaginary.",
+                    "🕶️ Rose-colored glasses recalibrated. The world is definitely not on fire.",
+                    "🎭 Perception filters adjusted. Everything is probably fine, probably."
+                ],
+                productivity: [
+                    "📊 Productivity theater enhanced. You can now feel busy while accomplishing nothing.",
+                    "⚡ Warning: May cause excessive satisfaction from reorganizing digital folders.",
+                    "🎬 New feature unlocked: Expert-level procrastination with purpose."
+                ],
+                expertise: [
+                    "🎓 Instant expertise activated. You're now qualified to debate strangers on the internet.",
+                    "🧠 Knowledge simulation engaged. Confidence in inversely proportional to actual knowledge.",
+                    "📚 Wikipedia-level understanding achieved across all subjects."
+                ],
+                luck: [
+                    "🍀 Luck algorithms updated. Green lights and empty bathrooms await.",
+                    "🎲 Probability matrices adjusted. Your lottery ticket odds remain unchanged.",
+                    "✨ Serendipity engine calibrated. Prepare for mildly convenient coincidences."
+                ],
+                nostalgia: [
+                    "📸 Memory filter applied. Your childhood was definitely better than it actually was.",
+                    "🌈 Negative memories archived. Only the highlight reel remains accessible.",
+                    "⏰ Temporal bias engaged. Everything was simpler/better/cheaper in the good old days."
+                ],
+                urgency: [
+                    "⏰ Artificial deadline generator activated. Everything is now URGENT!",
+                    "🚨 Panic mode calibrated. Mild inconveniences now feel life-threatening.",
+                    "⚡ Stress amplifier engaged. Your heart rate thanks you for the exercise."
+                ],
+                social: [
+                    "🔋 Social battery recalibrated. Small talk tolerance adjusted to survivable levels.",
+                    "👥 Interaction protocols updated. Awkward silences now 34% less awkward.",
+                    "🎭 Social performance mode engaged. You can now pretend to care about weather discussions."
+                ],
+                perfectionism: [
+                    "✨ Perfectionism engine activated. Nothing will ever be good enough again.",
+                    "🎯 Standards raised to impossible levels. Productivity may plummet accordingly.",
+                    "💎 Quality control engaged. Prepare for analysis paralysis in 3... 2... 1..."
+                ],
+                focus: [
+                    "🎯 Attention span extended by 3.7 seconds. Use them wisely.",
+                    "🧠 Focus mode activated. You can now concentrate on concentrating.",
+                    "⚡ Neural pathways optimized. Shiny objects are now 12% less distracting."
+                ],
+                wisdom: [
+                    "🦉 Hindsight generator updated. You'll understand today's mistakes in 3-5 years.",
+                    "💡 Retrospective clarity enhanced. Past decisions now 47% more obviously stupid.",
+                    "🔮 Wisdom engine calibrated. Perfect advice for situations you'll never encounter again."
+                ],
+                motivation: [
+                    "🚀 Motivation randomizer engaged. Expect productivity bursts at 3 AM.",
+                    "⚡ Inspiration generator activated. May cause sudden urges to reorganize your life.",
+                    "🔥 Motivational algorithms updated. Warning: May result in ambitious New Year's resolutions."
+                ]
+            };
+            
+            const settingNotifications = notifications[settingId] || [
+                "⚙️ Settings updated successfully. No actual changes detected.",
+                "✅ Configuration saved. Your placebo is now 15% more effective.",
+                "🎭 System optimized. You should feel better about this for no particular reason."
+            ];
+            
+            return settingNotifications[Math.floor(Math.random() * settingNotifications.length)];
+        }
+
+        function showNotification(message) {
+            const toast = document.getElementById('notificationToast');
+            const content = document.getElementById('toastContent');
+            
+            content.innerHTML = message;
+            toast.classList.add('show');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                if (toast.classList.contains('show')) {
+                    hideNotification();
+                }
+            }, 5000);
+        }
+
+        function hideNotification() {
+            const toast = document.getElementById('notificationToast');
+            toast.classList.remove('show');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            
+            showNotification(isDark ? 
+                '🌙 Dark mode enabled. Your eyes appreciate the consideration.' : 
+                '☀️ Light mode enabled. Embracing the brightness of existence.'
+            );
+        }
+
+        function showHelp() {
+            const helpText = `
+                <strong>🎭 Unnecessary Settings Help</strong><br><br>
+                • Use sliders to adjust your reality parameters<br>
+                • Toggle switches for binary life decisions<br>
+                • Watch the optimization meter for peak performance<br>
+                • Chaos mode for when you want life to make decisions<br>
+                • Keyboard shortcuts: Ctrl+R (randomize), Ctrl+D (defaults), Ctrl+C (chaos)
+            `;
+            showNotification(helpText);
+        }
+
+        function randomizeAll() {
+            settings.forEach(setting => {
+                if (setting.type === 'slider') {
+                    const randomValue = Math.floor(Math.random() * (setting.max - setting.min + 1)) + setting.min;
+                    updateSetting(setting.id, randomValue);
+                    document.getElementById(`slider-${setting.id}`).value = randomValue;
+                } else {
+                    const randomValue = Math.random() > 0.5;
+                    if (setting.value !== randomValue) {
+                        toggleSetting(setting.id);
+                    }
+                }
+            });
+            
+            showNotification("🎲 All settings randomized! Your personality has been scrambled like a digital egg.");
+        }
+
+        function resetToDefaults() {
+            const defaults = {
+                confidence: 75, reality: 42, productivity: 88, expertise: true,
+                luck: 60, nostalgia: 70, urgency: 85, social: 35,
+                perfectionism: false, focus: 25, wisdom: 90, motivation: true
+            };
+            
+            settings.forEach(setting => {
+                const defaultValue = defaults[setting.id];
+                if (defaultValue !== undefined) {
+                    if (setting.type === 'slider') {
+                        updateSetting(setting.id, defaultValue);
+                        document.getElementById(`slider-${setting.id}`).value = defaultValue;
+                    } else {
+                        if (setting.value !== defaultValue) {
+                            toggleSetting(setting.id);
+                        }
+                    }
+                }
+            });
+            
+            showNotification("🔄 Settings restored to factory defaults. You are now optimally mediocre.");
+        }
+
+        function enableChaosMode() {
+            chaosMode = !chaosMode;
+            const btn = event.target;
+            
+            if (chaosMode) {
+                btn.textContent = '🌪️ Disable Chaos';
+                btn.className = 'btn btn-warning';
+                startChaosMode();
+                showNotification("⚡ CHAOS MODE ACTIVATED! Reality.exe has stopped responding.");
+            } else {
+                btn.textContent = '⚡ Chaos Mode';
+                btn.className = 'btn btn-danger';
+                stopChaosMode();
+                showNotification("🛡️ Chaos mode disabled. Order tentatively restored.");
+            }
+        }
+
+        let chaosInterval;
+        function startChaosMode() {
+            chaosInterval = setInterval(() => {
+                const randomSetting = settings[Math.floor(Math.random() * settings.length)];
+                
+                if (randomSetting.type === 'slider') {
+                    const randomValue = Math.floor(Math.random() * (randomSetting.max - randomSetting.min + 1)) + randomSetting.min;
+                    updateSetting(randomSetting.id, randomValue);
+                    document.getElementById(`slider-${randomSetting.id}`).value = randomValue;
+                } else {
+                    toggleSetting(randomSetting.id);
+                }
+                
+                // Random notifications
+                if (Math.random() < 0.7) {
+                    const chaosMessages = [
+                        "🌪️ Chaos mode is rearranging your personality...",
+                        "⚡ Random setting modification detected!",
+                        "🎭 Your identity is now in flux!",
+                        "🔮 The universe is making decisions for you!",
+                        "💫 Embrace the beautiful chaos of existence!"
+                    ];
+                    showNotification(chaosMessages[Math.floor(Math.random() * chaosMessages.length)]);
+                }
+            }, 2000);
+        }
+
+        function stopChaosMode() {
+            if (chaosInterval) {
+                clearInterval(chaosInterval);
+                chaosInterval = null;
+            }
+        }
+
+        function triggerEasterEgg() {
+            easterEggCount++;
+            const messages = [
+                "🎭 You found the secret button! +1 to your curiosity score.",
+                "🌟 Easter egg #" + easterEggCount + " discovered! You're quite the explorer.",
+                "🎪 Congratulations! You've unlocked... absolutely nothing useful.",
+                "🎯 Achievement unlocked: Button Clicker Supreme!",
+                "🦄 You've accessed the secret developer appreciation button!",
+                "🎨 This button exists purely to satisfy your clicking urges.",
+                "🚀 Fun fact: You've now clicked this button " + easterEggCount + " times.",
+                "🎵 *plays victory sound that only exists in your imagination*",
+                "🏆 You win the award for most unnecessary clicks today!",
+                "🎪 The button appreciates your attention. It was feeling lonely."
+            ];
+            
+            showNotification(messages[Math.min(easterEggCount - 1, messages.length - 1)]);
+            
+            // Special effects for multiple clicks
+            if (easterEggCount === 5) {
+                document.body.style.animation = 'pulse 0.5s ease-in-out';
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                }, 500);
+            }
+            
+            if (easterEggCount === 10) {
+                // Create temporary confetti effect
+                createConfetti();
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.pointerEvents = 'none';
+                    confetti.style.zIndex = '9999';
+                    confetti.style.animation = 'fall 3s linear forwards';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }, i * 50);
+            }
+        }
+
+        // Add falling animation for confetti
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                to {
+                    transform: translateY(100vh) rotate(720deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize the application
+        function initializeApp() {
+            const grid = document.getElementById('settingsGrid');
+            
+            settings.forEach(setting => {
+                const card = createSettingCard(setting);
+                grid.appendChild(card);
+            });
+            
+            updateOptimization();
+            
+            // Welcome message
+            setTimeout(() => {
+                showNotification("🎉 Welcome to Unnecessary Settings™! Where placebo meets precision engineering.");
+            }, 1000);
+        }
+
+        // Add some dynamic effects
+        function addDynamicEffects() {
+            // Parallax effect for floating orbs
+            window.addEventListener('mousemove', (e) => {
+                const orbs = document.querySelectorAll('.orb');
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                
+                orbs.forEach((orb, index) => {
+                    const speed = (index + 1) * 0.5;
+                    orb.style.transform += ` translate(${x * speed}px, ${y * speed}px)`;
+                });
+            });
+            
+            // Intersection Observer for animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'slideInUp 0.6s ease-out';
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.setting-card').forEach(card => {
+                observer.observe(card);
+            });
+        }
+
+        // Initialize everything when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+            addDynamicEffects();
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'r':
+                        e.preventDefault();
+                        randomizeAll();
+                        break;
+                    case 'd':
+                        e.preventDefault();
+                        resetToDefaults();
+                        break;
+                    case 'c':
+                        e.preventDefault();
+                        enableChaosMode();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
